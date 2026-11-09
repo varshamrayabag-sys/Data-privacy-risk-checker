@@ -232,3 +232,4 @@ class ScanRepository:
 
 
 scan_repository = ScanRepository()
+

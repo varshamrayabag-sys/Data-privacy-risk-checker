@@ -55,3 +55,4 @@ def test_full_text_masking():
     assert "9876543210" not in masked
     assert "a***e@cyber.io" in masked
     assert "******3210" in masked
+

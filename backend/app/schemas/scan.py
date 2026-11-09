@@ -104,3 +104,4 @@ class DashboardSummary(BaseModel):
     entity_distribution: Dict[str, int]
     sensitivity_distribution: Dict[str, int]
     recent_scans: List[ScanHistoryItem]
+

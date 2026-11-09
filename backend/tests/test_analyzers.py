@@ -83,3 +83,4 @@ def test_risk_scoring_low_exposure():
     assessment = risk_engine.calculate_risk(entities)
     assert assessment.score <= 30
     assert assessment.category == "LOW"
+

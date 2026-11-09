@@ -165,7 +165,7 @@ class IfscRecognizer(PatternRecognizer):
 class IndianBankAccountRecognizer(PatternRecognizer):
     """
     Custom Presidio recognizer for Indian Bank Account Numbers (9 to 18 digits).
-    Requires surrounding banking context to avoid false positives.
+    Requires surrounding banking context to avoid false positives with phone numbers.
     """
     ENTITIES = ["IN_BANK_ACCOUNT"]
     
@@ -173,15 +173,15 @@ class IndianBankAccountRecognizer(PatternRecognizer):
         Pattern(
             name="indian_bank_account_num",
             regex=r"\b[0-9]{9,18}\b",
-            score=0.40  # Lower base score without context
+            score=0.35
         )
     ]
     
     CONTEXT = [
-        "account number", "account no", "a/c no", "acct no", "acct #",
+        "account", "account number", "account no", "a/c no", "acct no", "acct #",
         "bank a/c", "bank account", "savings a/c", "current a/c",
         "beneficiary a/c", "sbi a/c", "hdfc", "icici", "axis",
-        "pnb", "bob", "kotak", "canara", "union bank", "bank details"
+        "pnb", "bob", "kotak", "canara", "union bank", "bank details", "salary a/c"
     ]
 
     def __init__(self):
@@ -191,6 +191,14 @@ class IndianBankAccountRecognizer(PatternRecognizer):
             context=self.CONTEXT,
             name="IndianBankAccountRecognizer"
         )
+
+    def validate_result(self, pattern_text: str) -> Optional[bool]:
+        # Discard if it starts with +91 or common telecom country codes
+        clean = re.sub(r"\D", "", pattern_text)
+        if len(clean) == 10 and clean[0] in "6789":
+            # 10 digit number starting with 6-9 without strong context is more likely a phone
+            return None
+        return len(clean) >= 9 and len(clean) <= 18
 
 
 class IndianPhoneRecognizer(PatternRecognizer):

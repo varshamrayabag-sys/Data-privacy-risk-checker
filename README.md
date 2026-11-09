@@ -246,3 +246,4 @@ npm test
 2. **Deterministic Processing**: No user data is transmitted to third-party generative LLM endpoints. All inference is performed locally via Microsoft Presidio and spaCy.
 3. **Payload Sanitization**: Input strings are scrubbed of null bytes and hazardous control sequences. Maximum payload limits (500k characters for text, 10MB for documents) prevent Denial-of-Service (DoS).
 4. **MIME & Extension Enforcement**: Uploaded files undergo extension validation (`.pdf`, `.docx`, `.txt`) and stream inspection before processing.
+

@@ -122,3 +122,4 @@ class DocumentExtractor:
 
 
 document_extractor = DocumentExtractor()
+

@@ -1,18 +1,31 @@
 import logging
 import asyncio
-from typing import Optional
-from motor.motor_asyncio import AsyncIOMotorClient, AsyncIOMotorDatabase
+from typing import Optional, Any
 from app.core.config import settings
 
 logger = logging.getLogger(__name__)
 
+# Safe optional import of motor so app never crashes if motor is missing
+try:
+    from motor.motor_asyncio import AsyncIOMotorClient, AsyncIOMotorDatabase
+    HAS_MOTOR = True
+except ImportError:
+    AsyncIOMotorClient = Any  # type: ignore
+    AsyncIOMotorDatabase = Any  # type: ignore
+    HAS_MOTOR = False
+
 
 class DatabaseManager:
-    client: Optional[AsyncIOMotorClient] = None
-    db: Optional[AsyncIOMotorDatabase] = None
+    client: Optional[Any] = None
+    db: Optional[Any] = None
     is_connected: bool = False
 
     async def connect(self):
+        if not HAS_MOTOR:
+            logger.info("Motor library is not installed in the active Python environment. Using resilient local file persistence.")
+            self.is_connected = False
+            return
+
         try:
             logger.info(f"Attempting connection to MongoDB at: {settings.MONGODB_URI}")
             self.client = AsyncIOMotorClient(
@@ -36,8 +49,11 @@ class DatabaseManager:
             self.db = None
 
     async def close(self):
-        if self.client:
-            self.client.close()
+        if self.client and HAS_MOTOR:
+            try:
+                self.client.close()
+            except Exception:
+                pass
             self.is_connected = False
             logger.info("MongoDB connection closed.")
 

@@ -47,3 +47,4 @@ async def clear_all_history():
     """
     count = await scan_repository.clear_all()
     return {"message": f"Successfully cleared {count} scan records.", "cleared_count": count}
+

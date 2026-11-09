@@ -45,3 +45,4 @@ async def scan_document(file: UploadFile = File(...)):
         document_name=filename
     )
     return response
+

@@ -16,3 +16,4 @@ async def get_dashboard_summary():
     - Recent audit activity
     """
     return await scan_repository.get_dashboard_summary()
+

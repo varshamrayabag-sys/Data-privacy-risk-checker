@@ -1,0 +1,10 @@
+CYBERSECURITY DATA PRIVACY CHECKER - SAMPLE ONBOARDING FORM
+Candidate Full Name: Vikram Malhotra
+Official Email Address: vikram.malhotra@infosec-tech.org
+Contact Number: +91 9876512345
+Residential Address: Flat 204, Lotus Heights, Outer Ring Road, Bengaluru, Karnataka - 560103
+Date of Birth: 22/07/1988
+Indian Aadhaar Number: 9999 4105 1543
+Permanent Account Number (PAN): ABCPE1234F
+Bank Salary Account: 1234567890123
+Branch IFSC Code: SBIN0001234

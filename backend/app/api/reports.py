@@ -39,3 +39,4 @@ async def download_report(scan_id: str):
             status_code=500,
             detail=f"Error generating PDF report for '{scan_id}': {str(e)}"
         )
+

@@ -74,3 +74,4 @@ async def anonymize_text(request: AnonymizeRequest):
         entities_masked_count=len(filtered_entities),
         masked_entities=list({e.entity_type for e in filtered_entities})
     )
+

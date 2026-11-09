@@ -59,3 +59,4 @@ async def test_empty_text_error():
     async with AsyncClient(transport=transport, base_url="http://test") as ac:
         response = await ac.post("/api/v1/scan/text", json={"text": "   "})
         assert response.status_code == 400
+

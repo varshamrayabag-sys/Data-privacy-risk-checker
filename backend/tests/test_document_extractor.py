@@ -45,3 +45,4 @@ async def test_docx_extraction():
     extracted, name, _ = await document_extractor.extract_text(file)
     assert name == "contract.docx"
     assert "ABCDE1234F" in extracted
+

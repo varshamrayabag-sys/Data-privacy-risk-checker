@@ -1,5 +1,181 @@
 [
   {
+    "scan_id": "SCAN-20261109-1424DF2E",
+    "timestamp": "2026-11-09 07:04:01 UTC",
+    "input_type": "text",
+    "document_name": null,
+    "character_count": 72,
+    "total_entities_detected": 2,
+    "high_sensitivity_count": 0,
+    "medium_sensitivity_count": 2,
+    "low_sensitivity_count": 0,
+    "detected_entities": [
+      {
+        "entity_type": "PHONE_NUMBER",
+        "text": "+91 9876543210",
+        "start": 19,
+        "end": 33,
+        "confidence_score": 0.78,
+        "sensitivity_level": "MEDIUM",
+        "is_validated": true,
+        "validation_details": "Valid Phone Number Format",
+        "masked_text": "*********3210"
+      },
+      {
+        "entity_type": "EMAIL_ADDRESS",
+        "text": "test.user@privacy.org",
+        "start": 50,
+        "end": 71,
+        "confidence_score": 0.97,
+        "sensitivity_level": "MEDIUM",
+        "is_validated": true,
+        "validation_details": "Valid RFC Email Structure",
+        "masked_text": "t***r@privacy.org"
+      }
+    ],
+    "risk_assessment": {
+      "score": 25,
+      "category": "LOW",
+      "summary": "Low privacy risk score (25/100). Minimal sensitive data detected. Exposure risk is low under normal handling conditions.",
+      "raw_points": 25,
+      "capped_points": 25,
+      "breakdown": [
+        {
+          "entity_type": "PHONE_NUMBER",
+          "count": 1,
+          "weight_per_item": 15,
+          "total_points": 15,
+          "sensitivity_level": "MEDIUM",
+          "explanation": "1 instance(s) detected. Base weight 15 pts. Classified as MEDIUM sensitivity."
+        },
+        {
+          "entity_type": "EMAIL_ADDRESS",
+          "count": 1,
+          "weight_per_item": 10,
+          "total_points": 10,
+          "sensitivity_level": "MEDIUM",
+          "explanation": "1 instance(s) detected. Base weight 10 pts. Classified as MEDIUM sensitivity."
+        }
+      ]
+    },
+    "recommendations": [
+      {
+        "id": "REC_PHONE",
+        "title": "Personal Phone Number Obfuscation",
+        "description": "Direct telephone/mobile numbers detected. Exposed contact numbers lead to SMS phishing (smishing), telemarketing abuse, and SIM-swapping attempts.",
+        "severity": "WARNING",
+        "entity_type": "PHONE_NUMBER",
+        "action_steps": [
+          "Mask phone numbers as '******3210' in customer support logs and public documents.",
+          "Use virtual numbers, PBX routing, or masked calling proxies for customer-facing reps.",
+          "Migrate away from SMS-based 2FA towards Time-based One-Time Password (TOTP) apps."
+        ]
+      },
+      {
+        "id": "REC_EMAIL",
+        "title": "Email Address Sanitization",
+        "description": "Personal email addresses identified. Unredacted email addresses are frequently scraped by automated bots for spam campaigns, credential stuffing, and spear-phishing.",
+        "severity": "INFO",
+        "entity_type": "EMAIL_ADDRESS",
+        "action_steps": [
+          "Conceal usernames using standard masking patterns like 'r***@domain.com'.",
+          "Deploy domain-level DMARC, DKIM, and SPF validation records.",
+          "Encourage team members to utilize secondary email aliases for vendor registrations."
+        ]
+      }
+    ],
+    "masked_text": "Hello, my phone is *********3210 and my email is t***r@privacy.org.",
+    "processing_time_ms": 251.9
+  },
+  {
+    "scan_id": "SCAN-20261109-55246D82",
+    "timestamp": "2026-11-09 07:03:24 UTC",
+    "input_type": "text",
+    "document_name": null,
+    "character_count": 72,
+    "total_entities_detected": 2,
+    "high_sensitivity_count": 1,
+    "medium_sensitivity_count": 1,
+    "low_sensitivity_count": 0,
+    "detected_entities": [
+      {
+        "entity_type": "IN_BANK_ACCOUNT",
+        "text": "9876543210",
+        "start": 23,
+        "end": 33,
+        "confidence_score": 0.67,
+        "sensitivity_level": "HIGH",
+        "is_validated": true,
+        "validation_details": "Valid Bank Account digit sequence (10 digits)",
+        "masked_text": "******3210"
+      },
+      {
+        "entity_type": "EMAIL_ADDRESS",
+        "text": "test.user@privacy.org",
+        "start": 50,
+        "end": 71,
+        "confidence_score": 0.97,
+        "sensitivity_level": "MEDIUM",
+        "is_validated": true,
+        "validation_details": "Valid RFC Email Structure",
+        "masked_text": "t***r@privacy.org"
+      }
+    ],
+    "risk_assessment": {
+      "score": 40,
+      "category": "MEDIUM",
+      "summary": "Medium privacy risk score (40/100). Detectable personal contact details or sensitive data found. Actionable masking and selective redaction is strongly advised.",
+      "raw_points": 40,
+      "capped_points": 40,
+      "breakdown": [
+        {
+          "entity_type": "IN_BANK_ACCOUNT",
+          "count": 1,
+          "weight_per_item": 30,
+          "total_points": 30,
+          "sensitivity_level": "HIGH",
+          "explanation": "1 instance(s) detected. Base weight 30 pts. Classified as HIGH sensitivity."
+        },
+        {
+          "entity_type": "EMAIL_ADDRESS",
+          "count": 1,
+          "weight_per_item": 10,
+          "total_points": 10,
+          "sensitivity_level": "MEDIUM",
+          "explanation": "1 instance(s) detected. Base weight 10 pts. Classified as MEDIUM sensitivity."
+        }
+      ]
+    },
+    "recommendations": [
+      {
+        "id": "REC_BANK_ACCOUNT",
+        "title": "Bank Account Number Redaction",
+        "description": "Bank account numbers identified. Direct account numbers coupled with IFSC codes can facilitate social engineering, spear phishing, or unauthorized debit attempts.",
+        "severity": "CRITICAL",
+        "entity_type": "IN_BANK_ACCOUNT",
+        "action_steps": [
+          "Truncate account digits displaying only the last 4 characters.",
+          "Restrict full account visibility exclusively to authorized finance/payroll staff.",
+          "Implement dual-approval workflows before executing payouts or account modifications."
+        ]
+      },
+      {
+        "id": "REC_EMAIL",
+        "title": "Email Address Sanitization",
+        "description": "Personal email addresses identified. Unredacted email addresses are frequently scraped by automated bots for spam campaigns, credential stuffing, and spear-phishing.",
+        "severity": "INFO",
+        "entity_type": "EMAIL_ADDRESS",
+        "action_steps": [
+          "Conceal usernames using standard masking patterns like 'r***@domain.com'.",
+          "Deploy domain-level DMARC, DKIM, and SPF validation records.",
+          "Encourage team members to utilize secondary email aliases for vendor registrations."
+        ]
+      }
+    ],
+    "masked_text": "Hello, my phone is +91 ******3210 and my email is t***r@privacy.org.",
+    "processing_time_ms": 1001.12
+  },
+  {
     "scan_id": "SCAN-20261109-B24D7266",
     "timestamp": "2026-11-09 06:50:23 UTC",
     "input_type": "text",
