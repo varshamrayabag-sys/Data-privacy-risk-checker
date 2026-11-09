@@ -16,22 +16,24 @@ class Settings:
     VERSION: str = "1.0.0"
     API_V1_STR: str = "/api/v1"
 
-    # Server configuration
-    HOST: str = os.getenv("HOST", "0.0.0.0")
+    # Server configuration - Local Host
+    HOST: str = os.getenv("HOST", "127.0.0.1")
     PORT: int = int(os.getenv("PORT", "8000"))
     DEBUG: bool = os.getenv("DEBUG", "False").lower() in ("true", "1", "t")
 
-    # CORS
+    # Local CORS Origins
     BACKEND_CORS_ORIGINS: List[str] = [
         "http://localhost:5173",
+        "http://localhost:8000",
         "http://localhost:3000",
         "http://127.0.0.1:5173",
+        "http://127.0.0.1:8000",
         "http://127.0.0.1:3000",
-        "https://data-privacy-checker.vercel.app",
         "*"
     ]
 
-    # MongoDB connection
+    # Database & Storage configuration (Local host mode by default)
+    ENABLE_MONGODB: bool = os.getenv("ENABLE_MONGODB", "False").lower() in ("true", "1", "t")
     MONGODB_URI: str = os.getenv("MONGODB_URI", "mongodb://localhost:27017")
     DATABASE_NAME: str = os.getenv("DATABASE_NAME", "data_privacy_checker")
     COLLECTION_SCANS: str = "scans"

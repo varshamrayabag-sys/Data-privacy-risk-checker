@@ -20,9 +20,22 @@ class DatabaseManager:
     db: Optional[Any] = None
     is_connected: bool = False
 
+    @property
+    def storage_engine_name(self) -> str:
+        return "MongoDB" if self.is_connected else "Local JSON Store (backend/data/scan_history.json)"
+
     async def connect(self):
+        # Default local host mode does not block on external databases
+        if not getattr(settings, "ENABLE_MONGODB", False):
+            logger.info(
+                "Local host mode active: Using zero-dependency local JSON database (backend/data/scan_history.json). "
+                "Instant startup without external network or MongoDB dependency."
+            )
+            self.is_connected = False
+            return
+
         if not HAS_MOTOR:
-            logger.info("Motor library is not installed in the active Python environment. Using resilient local file persistence.")
+            logger.info("Motor library is not installed in the active Python environment. Using local file persistence.")
             self.is_connected = False
             return
 
@@ -41,8 +54,7 @@ class DatabaseManager:
         except Exception as e:
             logger.warning(
                 f"MongoDB connection to '{settings.MONGODB_URI}' not active ({e}). "
-                "Engaging resilient in-memory/file metadata persistence fallback. "
-                "To connect to MongoDB Atlas, set MONGODB_URI in .env."
+                "Engaging resilient local metadata persistence fallback."
             )
             self.is_connected = False
             self.client = None

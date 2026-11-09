@@ -42,7 +42,7 @@ ACTIONABLE REMEDIATION ENGINE (Statutory & Security Best Practices)
 DATA MASKING & OBFUSCATION (Aadhaar, Phone, Email, PAN Redaction)
      │
      ▼
-AUDIT METADATA PERSISTENCE (MongoDB Atlas / Resilient Local Persistence)
+AUDIT METADATA PERSISTENCE (Local JSON Storage Engine: backend/data/scan_history.json)
      │
      ▼
 INTERACTIVE DASHBOARD & PDF AUDIT REPORT GENERATION (ReportLab)
@@ -145,25 +145,14 @@ npm install
 
 ---
 
-## 5. DATABASE CONFIGURATION (MONGODB & ATLAS)
+## 5. LOCAL STORAGE & PERSISTENCE ARCHITECTURE
 
-The application natively supports **MongoDB** and **MongoDB Atlas** using `Motor` (async driver) and `PyMongo`.
+The application is engineered for **100% offline, zero-dependency local host execution**:
 
-### Connecting to MongoDB Atlas:
-1. Create a free cluster on [MongoDB Atlas](https://www.mongodb.com/cloud/atlas).
-2. Create a database user and whitelist your IP (or allow access from anywhere `0.0.0.0/0`).
-3. Obtain your connection string:
-   ```
-   mongodb+srv://<username>:<password>@cluster0.mongodb.net/?retryWrites=true&w=majority
-   ```
-4. Place this URI in `backend/.env`:
-   ```ini
-   MONGODB_URI="mongodb+srv://<username>:<password>@cluster0.mongodb.net/?retryWrites=true&w=majority"
-   DATABASE_NAME="data_privacy_checker"
-   ```
-
-### Intelligent Local Fallback:
-If a local MongoDB daemon is not running or no Atlas URI is provided, the backend **automatically activates a resilient local file storage repository** (`backend/data/scan_history.json`). The application starts up and runs without interruption.
+- **Default Storage Engine**: Built-in JSON audit store at `backend/data/scan_history.json`.
+- **Instant Local Startup**: No external databases, cloud services, or network connections required.
+- **Privacy Assurance**: All scans, text extraction, PII inference, and report generations run strictly on your local machine (`localhost`). Raw input documents and text are never written to disk, and audit metadata is kept entirely local.
+- **Optional MongoDB Mode**: If you run a local MongoDB instance, set `ENABLE_MONGODB=True` in `backend/.env`.
 
 ---
 

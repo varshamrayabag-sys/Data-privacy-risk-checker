@@ -1,6 +1,9 @@
 import pytest
 import io
-import fitz
+try:
+    import pymupdf as fitz
+except ImportError:
+    import fitz
 import docx
 from fastapi import UploadFile
 from app.utils.file_extractor import document_extractor, DocumentExtractionError

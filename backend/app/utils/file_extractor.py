@@ -1,6 +1,9 @@
 import os
 import io
-import fitz  # PyMuPDF
+try:
+    import pymupdf as fitz
+except ImportError:
+    import fitz
 import docx
 from typing import Tuple
 from fastapi import UploadFile, HTTPException

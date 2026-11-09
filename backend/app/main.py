@@ -80,10 +80,11 @@ app.include_router(reports_router, prefix=settings.API_V1_STR)
 async def root():
     return {
         "status": "online",
+        "mode": "localhost",
         "service": settings.PROJECT_NAME,
         "version": settings.VERSION,
         "docs_url": "/docs",
-        "database_connected": db_manager.is_connected
+        "storage_engine": db_manager.storage_engine_name
     }
 
 
@@ -91,11 +92,12 @@ async def root():
 async def health_check():
     return {
         "status": "healthy",
+        "mode": "localhost",
         "service": settings.PROJECT_NAME,
         "version": settings.VERSION,
         "database": {
-            "connected": db_manager.is_connected,
-            "engine": "MongoDB" if db_manager.is_connected else "Local Resilient Store"
+            "engine": db_manager.storage_engine_name,
+            "connected": db_manager.is_connected
         }
     }
 
