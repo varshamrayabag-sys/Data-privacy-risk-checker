@@ -47,7 +47,7 @@ export const HistoryPage: React.FC = () => {
   };
 
   const handleDeleteScan = async (scanId: string) => {
-    if (!confirm(`Are you sure you want to permanently delete audit record ${scanId}?`)) {
+    if (!confirm(`Are you sure you want to delete audit record ${scanId}?`)) {
       return;
     }
     try {
@@ -59,7 +59,7 @@ export const HistoryPage: React.FC = () => {
   };
 
   const handleClearAll = async () => {
-    if (!confirm("Are you sure you want to clear ALL audit history records? This cannot be undone.")) {
+    if (!confirm("Are you sure you want to clear all audit history records? This cannot be undone.")) {
       return;
     }
     setIsClearing(true);
@@ -92,154 +92,136 @@ export const HistoryPage: React.FC = () => {
   };
 
   return (
-    <div className="max-w-6xl mx-auto space-y-8">
+    <div className="max-w-5xl mx-auto space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-800 pb-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-white/[0.08] pb-4">
         <div className="space-y-1">
-          <div className="flex items-center gap-2 text-cyan-400 text-xs font-mono font-semibold uppercase tracking-wider">
-            <History className="w-4 h-4" />
-            <span>Audit History & Logs</span>
-          </div>
-          <h1 className="text-3xl font-extrabold text-white tracking-tight">
-            Historical Privacy Audit Log
+          <span className="text-xs font-mono text-[#71717a]">[TELEMETRY // AUDIT ARCHIVE]</span>
+          <h1 className="text-2xl font-normal text-[#ededed] tracking-tight">
+            Audit history
           </h1>
-          <p className="text-xs sm:text-sm text-slate-400">
-            Immutable metadata of all past scans stored securely in MongoDB / Persistent Storage. No raw text is preserved.
+          <p className="text-xs text-[#a1a1a6]">
+            Historical compliance scans and privacy risk assessments stored in local persistence.
           </p>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2">
           <button
             onClick={fetchHistory}
-            className="flex items-center gap-2 px-3.5 py-2 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-800 text-xs text-slate-300 transition-all font-semibold"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs bg-[#18181b] hover:bg-[#222225] border border-white/10 text-[#ededed] transition-colors"
           >
-            <RefreshCw className="w-3.5 h-3.5" />
+            <RefreshCw className="w-3.5 h-3.5 text-[#71717a]" />
             <span>Refresh</span>
           </button>
           {historyList.length > 0 && (
             <button
               onClick={handleClearAll}
               disabled={isClearing}
-              className="flex items-center gap-2 px-3.5 py-2 rounded-lg bg-rose-950/40 hover:bg-rose-900/60 border border-rose-800/60 text-xs text-rose-300 transition-all font-semibold"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs bg-rose-500/10 hover:bg-rose-500/20 text-rose-300 border border-rose-500/20 transition-colors"
             >
               <Trash2 className="w-3.5 h-3.5" />
-              <span>Clear All Logs</span>
+              <span>{isClearing ? 'Clearing...' : 'Clear history'}</span>
             </button>
           )}
         </div>
       </div>
 
-      {/* Error Banner */}
       {error && (
-        <div className="p-4 rounded-xl bg-rose-950/60 border border-rose-800 text-rose-300 flex items-center gap-3 text-xs">
-          <AlertCircle className="w-4 h-4 text-rose-400 shrink-0" />
+        <div className="p-3.5 rounded-lg bg-rose-500/10 border border-rose-500/20 text-rose-300 flex items-center gap-2 text-xs">
+          <AlertCircle className="w-4 h-4 shrink-0" />
           <span>{error}</span>
         </div>
       )}
 
-      {/* Loading State */}
-      {isLoading ? (
-        <div className="py-20 text-center space-y-3">
-          <RefreshCw className="w-8 h-8 mx-auto text-cyan-400 animate-spin" />
-          <p className="text-sm text-slate-400">Loading audit history from database...</p>
-        </div>
-      ) : historyList.length === 0 ? (
-        /* Empty State */
-        <div className="cyber-card py-20 px-4 text-center space-y-5 max-w-xl mx-auto">
-          <div className="w-16 h-16 mx-auto rounded-2xl bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-600">
-            <History className="w-8 h-8" />
+      {/* Main Table or Empty State */}
+      <div className="surface-card p-6 space-y-4">
+        {isLoading ? (
+          <div className="py-16 text-center text-xs text-[#71717a] font-mono">
+            Loading audit records...
           </div>
-          <div className="space-y-1">
-            <h3 className="text-xl font-bold text-white">No Previous Scans Stored</h3>
-            <p className="text-xs text-slate-400 max-w-sm mx-auto">
-              You haven't run any privacy checks yet. Start scanning documents to populate your audit timeline.
-            </p>
+        ) : historyList.length === 0 ? (
+          <div className="py-16 text-center space-y-3 max-w-sm mx-auto">
+            <History className="w-8 h-8 mx-auto text-[#71717a]" />
+            <div className="space-y-1">
+              <h3 className="text-sm font-medium text-[#ededed]">No scan history recorded</h3>
+              <p className="text-xs text-[#71717a]">
+                New scans will automatically appear in this local audit log.
+              </p>
+            </div>
+            <Link
+              to="/scanner"
+              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-md font-medium bg-[#ededed] text-[#141415] text-xs hover:bg-white transition-colors"
+            >
+              <span>Scan first document</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </Link>
           </div>
-          <Link
-            to="/scanner"
-            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold bg-gradient-to-r from-cyan-400 to-blue-500 text-slate-950 text-xs shadow-md shadow-cyan-500/20"
-          >
-            <span>Run New Privacy Scan</span>
-            <ArrowRight className="w-3.5 h-3.5" />
-          </Link>
-        </div>
-      ) : (
-        /* Table of Records */
-        <div className="cyber-card overflow-hidden">
+        ) : (
           <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs border-collapse">
+            <table className="w-full text-left text-xs border-collapse font-mono">
               <thead>
-                <tr className="border-b border-slate-800 text-slate-400 font-mono uppercase bg-slate-900/80">
-                  <th className="py-3 px-4">Audit ID</th>
-                  <th className="py-3 px-4">Timestamp</th>
-                  <th className="py-3 px-4">Type</th>
-                  <th className="py-3 px-4">Risk Level</th>
-                  <th className="py-3 px-4">Score</th>
-                  <th className="py-3 px-4">PII Count</th>
-                  <th className="py-3 px-4">High/Med/Low</th>
-                  <th className="py-3 px-4 text-right">Actions</th>
+                <tr className="border-b border-white/[0.08] text-[#71717a] bg-[#141415]">
+                  <th className="py-2.5 px-3">Audit ID</th>
+                  <th className="py-2.5 px-3">Timestamp</th>
+                  <th className="py-2.5 px-3">Type</th>
+                  <th className="py-2.5 px-3">Risk Tier</th>
+                  <th className="py-2.5 px-3">Score</th>
+                  <th className="py-2.5 px-3">Entities</th>
+                  <th className="py-2.5 px-3 text-right">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-800/60 font-mono">
+              <tbody className="divide-y divide-white/[0.06]">
                 {historyList.map((item) => {
                   const isHigh = item.risk_category === 'HIGH';
                   const isMed = item.risk_category === 'MEDIUM';
                   const badgeColor = isHigh
-                    ? 'text-rose-400 bg-rose-500/10 border-rose-500/30'
+                    ? 'text-rose-300 bg-rose-500/10 border-rose-500/20'
                     : isMed
-                    ? 'text-amber-400 bg-amber-500/10 border-amber-500/30'
-                    : 'text-emerald-400 bg-emerald-500/10 border-emerald-500/30';
+                    ? 'text-amber-300 bg-amber-500/10 border-amber-500/20'
+                    : 'text-emerald-300 bg-emerald-500/10 border-emerald-500/20';
 
                   return (
-                    <tr key={item.scan_id} className="hover:bg-slate-900/40 transition-colors">
-                      <td className="py-3 px-4 font-bold text-white">
+                    <tr key={item.scan_id} className="hover:bg-[#222225]/40 transition-colors">
+                      <td className="py-2.5 px-3 text-[#ededed]">
                         <button
                           onClick={() => handleViewScan(item.scan_id)}
-                          className="hover:text-cyan-400 underline decoration-cyan-500/40 text-left"
+                          className="hover:underline text-left"
                         >
                           {item.scan_id}
                         </button>
                       </td>
-                      <td className="py-3 px-4 text-slate-400">{item.timestamp}</td>
-                      <td className="py-3 px-4 text-slate-300">
-                        <span className="uppercase text-[11px] px-1.5 py-0.5 rounded bg-slate-900 border border-slate-800">
-                          {item.input_type}
-                        </span>
+                      <td className="py-2.5 px-3 text-[#71717a]">{item.timestamp}</td>
+                      <td className="py-2.5 px-3 uppercase text-[#a1a1a6]">
+                        {item.input_type}
+                        {item.document_name && <span className="text-[10px] text-[#71717a] block">{item.document_name}</span>}
                       </td>
-                      <td className="py-3 px-4">
-                        <span className={`px-2 py-0.5 rounded border text-[10px] font-extrabold uppercase ${badgeColor}`}>
+                      <td className="py-2.5 px-3">
+                        <span className={`px-2 py-0.5 rounded border text-[10px] ${badgeColor}`}>
                           {item.risk_category}
                         </span>
                       </td>
-                      <td className="py-3 px-4 font-bold text-white">
-                        {item.risk_score} / 100
-                      </td>
-                      <td className="py-3 px-4 font-semibold text-cyan-400">
-                        {item.total_entities}
-                      </td>
-                      <td className="py-3 px-4 text-slate-400 text-[11px]">
-                        <span className="text-rose-400">{item.high_count}H</span> • <span className="text-amber-400">{item.medium_count}M</span> • <span className="text-emerald-400">{item.low_count}L</span>
-                      </td>
-                      <td className="py-3 px-4 text-right">
-                        <div className="flex items-center justify-end gap-2">
+                      <td className="py-2.5 px-3 text-[#ededed] font-mono">{item.risk_score} / 100</td>
+                      <td className="py-2.5 px-3 text-[#a1a1a6]">{item.total_entities}</td>
+                      <td className="py-2.5 px-3 text-right">
+                        <div className="flex items-center justify-end gap-1.5">
                           <button
                             onClick={() => handleViewScan(item.scan_id)}
-                            className="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-cyan-400 transition-all"
-                            title="View Inspection Dashboard"
+                            title="View Inspection"
+                            className="p-1.5 rounded hover:bg-[#222225] text-[#a1a1a6] hover:text-[#ededed] transition-colors"
                           >
                             <Eye className="w-3.5 h-3.5" />
                           </button>
                           <button
                             onClick={() => handleDownloadPDF(item.scan_id)}
-                            className="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white transition-all"
-                            title="Download PDF Audit Report"
+                            title="Download PDF"
+                            className="p-1.5 rounded hover:bg-[#222225] text-[#a1a1a6] hover:text-[#ededed] transition-colors"
                           >
                             <Download className="w-3.5 h-3.5" />
                           </button>
                           <button
                             onClick={() => handleDeleteScan(item.scan_id)}
-                            className="p-1.5 rounded-lg bg-slate-800 hover:bg-rose-950 text-slate-400 hover:text-rose-400 transition-all"
-                            title="Delete Record"
+                            title="Delete"
+                            className="p-1.5 rounded hover:bg-rose-500/20 text-[#71717a] hover:text-rose-400 transition-colors"
                           >
                             <Trash2 className="w-3.5 h-3.5" />
                           </button>
@@ -251,8 +233,8 @@ export const HistoryPage: React.FC = () => {
               </tbody>
             </table>
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 };

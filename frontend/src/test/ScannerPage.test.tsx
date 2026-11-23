@@ -12,9 +12,9 @@ describe('ScannerPage Component', () => {
       </BrowserRouter>
     );
 
-    expect(screen.getByText('Manual Text Entry')).toBeInTheDocument();
-    expect(screen.getByText('Upload Document')).toBeInTheDocument();
-    expect(screen.getByPlaceholderText(/Paste raw text/i)).toBeInTheDocument();
+    expect(screen.getByText(/manual text entry/i)).toBeInTheDocument();
+    expect(screen.getByText(/upload document/i)).toBeInTheDocument();
+    expect(screen.getByPlaceholderText(/paste text/i)).toBeInTheDocument();
   });
 
   it('switches between Manual Text and Document tabs', () => {
@@ -24,11 +24,11 @@ describe('ScannerPage Component', () => {
       </BrowserRouter>
     );
 
-    const docTab = screen.getByText('Upload Document');
+    const docTab = screen.getByText(/upload document/i);
     fireEvent.click(docTab);
 
-    expect(screen.getByText(/Drag and drop your document here/i)).toBeInTheDocument();
-    expect(screen.getByText(/Supported formats:/i)).toBeInTheDocument();
+    expect(screen.getByText(/drop document to inspect/i)).toBeInTheDocument();
+    expect(screen.getByText(/supported:/i)).toBeInTheDocument();
   });
 
   it('populates textarea when sample preset button is clicked', () => {
@@ -38,10 +38,10 @@ describe('ScannerPage Component', () => {
       </BrowserRouter>
     );
 
-    const presetBtn = screen.getByText('KYC Onboarding');
+    const presetBtn = screen.getByText(/kyc dossier/i);
     fireEvent.click(presetBtn);
 
-    const textarea = screen.getByPlaceholderText(/Paste raw text/i) as HTMLTextAreaElement;
+    const textarea = screen.getByPlaceholderText(/paste text/i) as HTMLTextAreaElement;
     expect(textarea.value).toContain('Rajesh V. Sharma');
     expect(textarea.value).toContain('9999 4105 1543');
   });

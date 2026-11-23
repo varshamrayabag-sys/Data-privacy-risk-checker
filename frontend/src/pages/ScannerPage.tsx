@@ -7,7 +7,6 @@ import {
   Trash2, 
   AlertCircle, 
   FileUp, 
-  Sparkles,
   Info,
   Loader2
 } from 'lucide-react';
@@ -29,7 +28,7 @@ export const ScannerPage: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  // Sample data presets for instant demonstration & testing
+  // Preset sample records for instant verification
   const sampleData = {
     employee: `EMPLOYEE ONBOARDING VERIFICATION DOSSIER
 Full Legal Name: Rajesh V. Sharma
@@ -70,13 +69,10 @@ Weekly maintenance windows are scheduled every Sunday between 02:00 and 04:00 UT
     setErrorMessage(null);
 
     try {
-      // Check if custom weights exist in localStorage from Settings
       const savedWeights = localStorage.getItem('privacy_custom_weights');
       const customWeights = savedWeights ? JSON.parse(savedWeights) : undefined;
 
       const result: ScanResponse = await api.scanText(rawText, customWeights);
-      
-      // Store current scan in sessionStorage for persistent dashboard inspection
       sessionStorage.setItem('current_scan_result', JSON.stringify(result));
       navigate('/dashboard', { state: { scanResult: result } });
     } catch (err: any) {
@@ -143,83 +139,78 @@ Weekly maintenance windows are scheduled every Sunday between 02:00 and 04:00 UT
   };
 
   return (
-    <div className="max-w-4xl mx-auto space-y-8">
+    <div className="max-w-4xl mx-auto space-y-6">
       {/* Header */}
-      <div className="space-y-2">
-        <div className="flex items-center gap-2 text-cyan-400 text-xs font-mono font-semibold uppercase tracking-wider">
-          <Scan className="w-4 h-4" />
-          <span>Privacy Risk Scanner</span>
-        </div>
-        <h1 className="text-3xl font-extrabold text-white tracking-tight">
-          Ingest & Inspect Sensitive Data
+      <div className="space-y-1">
+        <span className="text-xs font-mono text-[#71717a]">[INPUT // DATA INGESTION]</span>
+        <h1 className="text-2xl font-normal text-[#ededed] tracking-tight">
+          Privacy risk scanner
         </h1>
-        <p className="text-sm text-slate-400">
-          Paste plain text or upload real documents (.PDF, .DOCX, .TXT) to execute comprehensive PII discovery and algorithmic privacy risk modeling.
+        <p className="text-xs text-[#a1a1a6]">
+          Ingest raw text or documents (.pdf, .docx, .txt) for deterministic PII classification and risk quantification.
         </p>
       </div>
 
       {/* Tabs Switcher */}
-      <div className="flex items-center p-1 bg-slate-900 border border-slate-800 rounded-xl max-w-md">
+      <div className="inline-flex items-center p-0.5 bg-[#18181b] border border-white/[0.08] rounded-lg">
         <button
           onClick={() => { setActiveTab('text'); setErrorMessage(null); }}
-          className={`flex-1 flex items-center justify-center gap-2 py-2 px-4 rounded-lg text-sm font-semibold transition-all ${
+          className={`flex items-center gap-1.5 py-1.5 px-3 rounded-md text-xs font-medium transition-colors ${
             activeTab === 'text'
-              ? 'bg-cyan-500 text-slate-950 shadow-md shadow-cyan-500/20'
-              : 'text-slate-400 hover:text-white'
+              ? 'bg-[#222225] text-[#ededed] border border-white/10 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]'
+              : 'text-[#a1a1a6] hover:text-[#ededed]'
           }`}
         >
-          <FileText className="w-4 h-4" />
-          <span>Manual Text Entry</span>
+          <FileText className="w-3.5 h-3.5 stroke-[1.5]" />
+          <span>Manual text entry</span>
         </button>
         <button
           onClick={() => { setActiveTab('document'); setErrorMessage(null); }}
-          className={`flex-1 flex items-center justify-center gap-2 py-2 px-4 rounded-lg text-sm font-semibold transition-all ${
+          className={`flex items-center gap-1.5 py-1.5 px-3 rounded-md text-xs font-medium transition-colors ${
             activeTab === 'document'
-              ? 'bg-cyan-500 text-slate-950 shadow-md shadow-cyan-500/20'
-              : 'text-slate-400 hover:text-white'
+              ? 'bg-[#222225] text-[#ededed] border border-white/10 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]'
+              : 'text-[#a1a1a6] hover:text-[#ededed]'
           }`}
         >
-          <Upload className="w-4 h-4" />
-          <span>Upload Document</span>
+          <Upload className="w-3.5 h-3.5 stroke-[1.5]" />
+          <span>Upload document</span>
         </button>
       </div>
 
       {/* Error Banner */}
       {errorMessage && (
-        <div className="p-4 rounded-xl bg-rose-950/60 border border-rose-800/80 text-rose-200 flex items-start gap-3">
-          <AlertCircle className="w-5 h-5 text-rose-400 shrink-0 mt-0.5" />
-          <div className="text-xs sm:text-sm leading-relaxed">
-            <span className="font-bold">Scan Error: </span>{errorMessage}
-          </div>
+        <div className="p-3.5 rounded-lg bg-rose-500/10 border border-rose-500/20 text-rose-300 flex items-start gap-2.5 text-xs">
+          <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
+          <span>{errorMessage}</span>
         </div>
       )}
 
       {/* TAB A: TEXT SCANNER */}
       {activeTab === 'text' && (
-        <div className="cyber-card p-6 space-y-4">
-          <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-800/80 pb-3">
-            <div className="flex items-center gap-2">
-              <span className="text-xs font-semibold text-slate-300">Preset Sample Data:</span>
+        <div className="surface-card p-6 space-y-4">
+          <div className="flex flex-wrap items-center justify-between gap-2 border-b border-white/[0.06] pb-3">
+            <div className="flex items-center gap-1.5">
+              <span className="text-xs text-[#71717a] mr-1">Presets:</span>
               <button
                 type="button"
                 onClick={() => setRawText(sampleData.employee)}
-                className="px-2.5 py-1 text-xs rounded bg-slate-800 hover:bg-slate-700 text-cyan-400 border border-slate-700 font-medium transition-all"
+                className="px-2 py-1 text-xs rounded bg-[#222225] hover:bg-[#2a2a2e] text-[#ededed] border border-white/10 transition-colors"
               >
-                KYC Onboarding
+                KYC Dossier
               </button>
               <button
                 type="button"
                 onClick={() => setRawText(sampleData.financial)}
-                className="px-2.5 py-1 text-xs rounded bg-slate-800 hover:bg-slate-700 text-blue-400 border border-slate-700 font-medium transition-all"
+                className="px-2 py-1 text-xs rounded bg-[#222225] hover:bg-[#2a2a2e] text-[#ededed] border border-white/10 transition-colors"
               >
-                Financial Wire
+                Wire Transfer
               </button>
               <button
                 type="button"
                 onClick={() => setRawText(sampleData.safe)}
-                className="px-2.5 py-1 text-xs rounded bg-slate-800 hover:bg-slate-700 text-emerald-400 border border-slate-700 font-medium transition-all"
+                className="px-2 py-1 text-xs rounded bg-[#222225] hover:bg-[#2a2a2e] text-[#ededed] border border-white/10 transition-colors"
               >
-                Safe Document (No PII)
+                Safe Document
               </button>
             </div>
 
@@ -227,45 +218,45 @@ Weekly maintenance windows are scheduled every Sunday between 02:00 and 04:00 UT
               <button
                 type="button"
                 onClick={() => setRawText('')}
-                className="text-xs flex items-center gap-1 text-slate-400 hover:text-rose-400 transition-colors"
+                className="text-xs flex items-center gap-1 text-[#71717a] hover:text-rose-400 transition-colors"
               >
                 <Trash2 className="w-3.5 h-3.5" />
-                <span>Clear Text</span>
+                <span>Clear</span>
               </button>
             )}
           </div>
 
           <div className="relative">
             <textarea
-              rows={12}
+              rows={11}
               value={rawText}
               onChange={(e) => setRawText(e.target.value)}
-              placeholder="Paste raw text, contract terms, customer records, or correspondence containing potential PII..."
-              className="w-full bg-[#080d19] border border-slate-800 rounded-xl p-4 text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 font-mono leading-relaxed"
+              placeholder="Paste text, contracts, customer records, or correspondence containing potential PII..."
+              className="w-full bg-[#141415] border border-white/10 rounded-lg p-4 text-xs sm:text-sm text-[#ededed] placeholder-[#71717a] focus:outline-none focus:border-white/30 font-mono leading-relaxed"
             />
           </div>
 
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-2">
-            <div className="flex items-center gap-4 text-xs text-slate-400 font-mono">
-              <span>Characters: <b className="text-slate-200">{rawText.length.toLocaleString()}</b></span>
-              <span>Words: <b className="text-slate-200">{rawText.trim() ? rawText.trim().split(/\s+/).length : 0}</b></span>
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-1">
+            <div className="flex items-center gap-3 text-xs text-[#71717a] font-mono">
+              <span>Chars: <b className="text-[#ededed] font-normal">{rawText.length.toLocaleString()}</b></span>
+              <span>Words: <b className="text-[#ededed] font-normal">{rawText.trim() ? rawText.trim().split(/\s+/).length : 0}</b></span>
             </div>
 
             <button
               type="button"
               disabled={isLoading || !rawText.trim()}
               onClick={handleScanText}
-              className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-bold text-slate-950 bg-gradient-to-r from-cyan-400 to-blue-500 hover:from-cyan-300 hover:to-blue-400 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-cyan-500/20 transition-all text-sm"
+              className="w-full sm:w-auto h-10 px-5 rounded-lg font-medium text-xs text-[#141415] bg-[#ededed] hover:bg-white disabled:opacity-40 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2 shadow-[inset_0_1px_0_rgba(255,255,255,0.4)]"
             >
               {isLoading ? (
                 <>
-                  <Loader2 className="w-4 h-4 animate-spin text-slate-950" />
-                  <span>Analyzing Privacy Vectors...</span>
+                  <Loader2 className="w-3.5 h-3.5 animate-spin text-[#141415]" />
+                  <span>Analyzing privacy vectors...</span>
                 </>
               ) : (
                 <>
-                  <Sparkles className="w-4 h-4 text-slate-950" />
-                  <span>Execute Privacy Scan</span>
+                  <Scan className="w-3.5 h-3.5 stroke-[1.5]" />
+                  <span>Execute privacy scan</span>
                 </>
               )}
             </button>
@@ -275,36 +266,33 @@ Weekly maintenance windows are scheduled every Sunday between 02:00 and 04:00 UT
 
       {/* TAB B: DOCUMENT SCANNER */}
       {activeTab === 'document' && (
-        <div className="cyber-card p-6 space-y-6">
+        <div className="surface-card p-6 space-y-4">
           <div
             onDragOver={(e) => { e.preventDefault(); setIsDragging(true); }}
             onDragLeave={() => setIsDragging(false)}
             onDrop={handleDrop}
-            className={`border-2 border-dashed rounded-2xl p-10 text-center transition-all ${
+            className={`border border-dashed rounded-xl p-8 text-center transition-colors ${
               isDragging
-                ? 'border-cyan-400 bg-cyan-950/20'
-                : 'border-slate-800 hover:border-slate-700 bg-[#080d19]'
+                ? 'border-white/40 bg-[#222225]'
+                : 'border-white/10 hover:border-white/20 bg-[#141415]'
             }`}
           >
-            <div className="max-w-md mx-auto space-y-4">
-              <div className="w-14 h-14 mx-auto rounded-2xl bg-slate-900 border border-slate-700 flex items-center justify-center text-cyan-400">
-                <FileUp className="w-7 h-7" />
+            <div className="max-w-xs mx-auto space-y-3">
+              <div className="w-10 h-10 mx-auto rounded-lg bg-[#18181b] border border-white/10 flex items-center justify-center text-[#ededed]">
+                <FileUp className="w-5 h-5 stroke-[1.5]" />
               </div>
               <div className="space-y-1">
-                <p className="text-base font-semibold text-white">
-                  Drag and drop your document here
+                <p className="text-sm font-medium text-[#ededed]">
+                  Drop document to inspect
                 </p>
-                <p className="text-xs text-slate-400">
-                  Supported formats: <b className="text-slate-300">PDF (.pdf)</b>, <b className="text-slate-300">Word (.docx)</b>, <b className="text-slate-300">Text (.txt)</b>
-                </p>
-                <p className="text-[11px] text-slate-500">
-                  Maximum file size: 10 MB per file
+                <p className="text-xs text-[#71717a]">
+                  Supported: PDF (.pdf), Word (.docx), Text (.txt) up to 10 MB
                 </p>
               </div>
 
               <div>
-                <label className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs font-semibold text-cyan-400 cursor-pointer transition-all">
-                  <span>Browse Local File</span>
+                <label className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-[#222225] hover:bg-[#2a2a2e] border border-white/10 text-xs font-medium text-[#ededed] cursor-pointer transition-colors">
+                  <span>Choose local file</span>
                   <input
                     type="file"
                     accept=".pdf,.docx,.txt"
@@ -318,14 +306,14 @@ Weekly maintenance windows are scheduled every Sunday between 02:00 and 04:00 UT
 
           {/* Selected File Card */}
           {selectedFile && (
-            <div className="p-4 rounded-xl bg-slate-900/90 border border-cyan-500/30 flex items-center justify-between">
+            <div className="p-3.5 rounded-lg bg-[#141415] border border-white/10 flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-lg bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400 font-bold text-xs uppercase font-mono">
+                <div className="w-8 h-8 rounded-md bg-[#222225] border border-white/10 flex items-center justify-center text-[#ededed] font-mono text-xs uppercase">
                   {selectedFile.name.split('.').pop()}
                 </div>
                 <div>
-                  <div className="text-sm font-semibold text-white">{selectedFile.name}</div>
-                  <div className="text-xs text-slate-400 font-mono">
+                  <div className="text-xs font-medium text-[#ededed]">{selectedFile.name}</div>
+                  <div className="text-[11px] text-[#71717a] font-mono">
                     {(selectedFile.size / 1024).toFixed(1)} KB • Ready for extraction
                   </div>
                 </div>
@@ -334,29 +322,29 @@ Weekly maintenance windows are scheduled every Sunday between 02:00 and 04:00 UT
               <button
                 type="button"
                 onClick={() => setSelectedFile(null)}
-                className="text-slate-400 hover:text-rose-400 p-2"
+                className="text-[#71717a] hover:text-rose-400 p-1.5 transition-colors"
               >
                 <Trash2 className="w-4 h-4" />
               </button>
             </div>
           )}
 
-          <div className="flex justify-end pt-2">
+          <div className="flex justify-end pt-1">
             <button
               type="button"
               disabled={isLoading || !selectedFile}
               onClick={handleScanDocument}
-              className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-bold text-slate-950 bg-gradient-to-r from-cyan-400 to-blue-500 hover:from-cyan-300 hover:to-blue-400 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-cyan-500/20 transition-all text-sm"
+              className="w-full sm:w-auto h-10 px-5 rounded-lg font-medium text-xs text-[#141415] bg-[#ededed] hover:bg-white disabled:opacity-40 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2 shadow-[inset_0_1px_0_rgba(255,255,255,0.4)]"
             >
               {isLoading ? (
                 <>
-                  <Loader2 className="w-4 h-4 animate-spin text-slate-950" />
-                  <span>Extracting & Auditing Document...</span>
+                  <Loader2 className="w-3.5 h-3.5 animate-spin text-[#141415]" />
+                  <span>Extracting & auditing...</span>
                 </>
               ) : (
                 <>
-                  <Upload className="w-4 h-4 text-slate-950" />
-                  <span>Process & Audit Document</span>
+                  <Upload className="w-3.5 h-3.5 stroke-[1.5]" />
+                  <span>Audit document</span>
                 </>
               )}
             </button>
@@ -364,11 +352,11 @@ Weekly maintenance windows are scheduled every Sunday between 02:00 and 04:00 UT
         </div>
       )}
 
-      {/* Security notice */}
-      <div className="flex items-center gap-3 p-4 rounded-xl bg-slate-900/40 border border-slate-800 text-xs text-slate-400">
-        <Info className="w-4 h-4 text-cyan-400 shrink-0" />
+      {/* Security Guarantee */}
+      <div className="flex items-center gap-2.5 p-3 rounded-lg bg-[#18181b] border border-white/[0.06] text-xs text-[#71717a]">
+        <Info className="w-4 h-4 text-[#a1a1a6] shrink-0" />
         <span>
-          <b>Zero Permanent Raw Storage Guarantee:</b> Document payloads and input text are processed strictly in-memory during detection. Only anonymized statistical metrics are saved.
+          Volatile memory processing guarantee: Document payloads are analyzed in temporary RAM and never stored to permanent storage.
         </span>
       </div>
     </div>

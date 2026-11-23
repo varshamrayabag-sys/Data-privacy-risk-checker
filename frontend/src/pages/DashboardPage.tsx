@@ -51,7 +51,6 @@ export const DashboardPage: React.FC = () => {
   useEffect(() => {
     fetchSummary();
 
-    // 1. Check router state
     if (location.state && (location.state as any).scanResult) {
       const res = (location.state as any).scanResult;
       setScanData(res);
@@ -60,7 +59,6 @@ export const DashboardPage: React.FC = () => {
       return;
     }
 
-    // 2. Check sessionStorage
     const cached = sessionStorage.getItem('current_scan_result');
     if (cached) {
       try {
@@ -71,7 +69,6 @@ export const DashboardPage: React.FC = () => {
       }
     }
 
-    // 3. Fallback: fetch most recent scan from history
     const fetchLatest = async () => {
       try {
         const history = await api.getHistory(1, 0);
@@ -129,12 +126,11 @@ export const DashboardPage: React.FC = () => {
     }
   };
 
-  // Build Highlighted Text with Colored Entity Chips
   const renderHighlightedText = () => {
     if (!scanData) return null;
     const text = scanData.original_text || scanData.masked_text;
     if (!text || scanData.detected_entities.length === 0) {
-      return <div className="text-slate-300 leading-relaxed font-mono whitespace-pre-wrap">{text}</div>;
+      return <div className="text-[#a1a1a6] leading-relaxed font-mono whitespace-pre-wrap">{text}</div>;
     }
 
     const sorted = [...scanData.detected_entities].sort((a, b) => a.start - b.start);
@@ -149,19 +145,19 @@ export const DashboardPage: React.FC = () => {
       }
 
       const chipColor = ent.sensitivity_level === 'HIGH'
-        ? 'bg-rose-950/80 text-rose-300 border-rose-600/60'
+        ? 'bg-rose-500/15 text-rose-300 border border-rose-500/30'
         : ent.sensitivity_level === 'MEDIUM'
-        ? 'bg-amber-950/80 text-amber-300 border-amber-600/60'
-        : 'bg-emerald-950/80 text-emerald-300 border-emerald-600/60';
+        ? 'bg-amber-500/15 text-amber-300 border border-amber-500/30'
+        : 'bg-emerald-500/15 text-emerald-300 border border-emerald-500/30';
 
       elements.push(
         <span
           key={`ent-${i}-${ent.start}`}
-          title={`${ent.entity_type} • ${ent.sensitivity_level} Severity • Conf: ${Math.round(ent.confidence_score * 100)}% • ${ent.validation_details || 'Detected'}`}
-          className={`inline-flex items-center gap-1 px-1.5 py-0.5 rounded border text-xs font-mono font-bold cursor-help transition-all hover:scale-105 ${chipColor}`}
+          title={`${ent.entity_type} • ${ent.sensitivity_level} • Conf: ${Math.round(ent.confidence_score * 100)}%`}
+          className={`inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-xs font-mono font-normal ${chipColor}`}
         >
           <span>{text.slice(ent.start, ent.end)}</span>
-          <span className="text-[10px] opacity-75 font-sans uppercase">[{ent.entity_type}]</span>
+          <span className="text-[10px] opacity-75 font-mono">[{ent.entity_type}]</span>
         </span>
       );
 
@@ -173,38 +169,38 @@ export const DashboardPage: React.FC = () => {
     }
 
     return (
-      <div className="font-mono text-xs sm:text-sm leading-relaxed whitespace-pre-wrap text-slate-200">
+      <div className="font-mono text-xs sm:text-sm leading-relaxed whitespace-pre-wrap text-[#ededed]">
         {elements}
       </div>
     );
   };
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6">
       {/* View Switcher: Current Scan vs System Analytics */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-800 pb-4">
-        <div className="flex items-center p-1 bg-slate-900 border border-slate-800 rounded-xl">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-white/[0.08] pb-4">
+        <div className="inline-flex items-center p-0.5 bg-[#18181b] border border-white/[0.08] rounded-lg">
           <button
             onClick={() => setActiveTab('current')}
-            className={`flex items-center gap-2 py-1.5 px-3.5 rounded-lg text-xs font-bold transition-all ${
+            className={`flex items-center gap-1.5 py-1.5 px-3 rounded-md text-xs font-medium transition-colors ${
               activeTab === 'current'
-                ? 'bg-cyan-500 text-slate-950 shadow-sm'
-                : 'text-slate-400 hover:text-white'
+                ? 'bg-[#222225] text-[#ededed] border border-white/10 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]'
+                : 'text-[#a1a1a6] hover:text-[#ededed]'
             }`}
           >
-            <FileText className="w-3.5 h-3.5" />
-            <span>Active Audit Inspection</span>
+            <FileText className="w-3.5 h-3.5 stroke-[1.5]" />
+            <span>Active inspection</span>
           </button>
           <button
             onClick={() => { setActiveTab('system'); fetchSummary(); }}
-            className={`flex items-center gap-2 py-1.5 px-3.5 rounded-lg text-xs font-bold transition-all ${
+            className={`flex items-center gap-1.5 py-1.5 px-3 rounded-md text-xs font-medium transition-colors ${
               activeTab === 'system'
-                ? 'bg-cyan-500 text-slate-950 shadow-sm'
-                : 'text-slate-400 hover:text-white'
+                ? 'bg-[#222225] text-[#ededed] border border-white/10 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]'
+                : 'text-[#a1a1a6] hover:text-[#ededed]'
             }`}
           >
-            <BarChart3 className="w-3.5 h-3.5" />
-            <span>System Aggregate Analytics</span>
+            <BarChart3 className="w-3.5 h-3.5 stroke-[1.5]" />
+            <span>Aggregate telemetry</span>
           </button>
         </div>
 
@@ -213,16 +209,16 @@ export const DashboardPage: React.FC = () => {
             <button
               onClick={handleDownloadPDF}
               disabled={isDownloadingReport}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-semibold bg-slate-900 hover:bg-slate-800 border border-slate-700 text-white text-xs shadow-sm transition-all"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-md font-medium bg-[#18181b] hover:bg-[#222225] border border-white/10 text-[#ededed] text-xs transition-colors"
             >
-              <Download className="w-3.5 h-3.5 text-cyan-400" />
-              <span>{isDownloadingReport ? 'Generating...' : 'Download PDF'}</span>
+              <Download className="w-3.5 h-3.5 text-[#a1a1a6]" />
+              <span>{isDownloadingReport ? 'Generating...' : 'Export PDF audit'}</span>
             </button>
             <Link
               to="/scanner"
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-bold bg-cyan-500 hover:bg-cyan-400 text-slate-950 text-xs transition-all shadow-sm"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-md font-medium bg-[#ededed] hover:bg-white text-[#141415] text-xs transition-colors"
             >
-              <span>Scan New</span>
+              <span>Scan new file</span>
             </Link>
           </div>
         )}
@@ -232,146 +228,150 @@ export const DashboardPage: React.FC = () => {
       {activeTab === 'current' && (
         <>
           {!scanData ? (
-            <div className="cyber-card py-16 px-4 text-center space-y-4 max-w-lg mx-auto">
-              <Activity className="w-10 h-10 mx-auto text-slate-600" />
+            <div className="surface-card py-16 px-4 text-center space-y-3 max-w-md mx-auto">
+              <Activity className="w-8 h-8 mx-auto text-[#71717a]" />
               <div className="space-y-1">
-                <h3 className="text-lg font-bold text-white">No Active Scan Loaded</h3>
-                <p className="text-xs text-slate-400">
-                  Run a privacy scan to inspect detected entities, risk contributions, and masked data.
+                <h3 className="text-sm font-medium text-[#ededed]">No active scan record</h3>
+                <p className="text-xs text-[#71717a]">
+                  Execute a privacy scan to view detected entities, risk contributions, and masked output.
                 </p>
               </div>
               <Link
                 to="/scanner"
-                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold bg-gradient-to-r from-cyan-400 to-blue-500 text-slate-950 text-xs shadow-md shadow-cyan-500/20"
+                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-md font-medium bg-[#ededed] text-[#141415] text-xs hover:bg-white transition-colors"
               >
-                <span>Launch Scanner</span>
+                <span>Launch scanner</span>
                 <ArrowRight className="w-3.5 h-3.5" />
               </Link>
             </div>
           ) : (
-            <div className="space-y-8">
+            <div className="space-y-6">
               {/* Header Info */}
               <div className="space-y-1">
-                <div className="flex items-center gap-3">
-                  <span className="text-xs font-mono font-bold px-2 py-0.5 rounded bg-slate-900 border border-slate-800 text-cyan-400">
-                    AUDIT ID: {scanData.scan_id}
+                <div className="flex items-center gap-2.5">
+                  <span className="text-[11px] font-mono px-2 py-0.5 rounded bg-[#18181b] border border-white/10 text-[#ededed]">
+                    AUDIT // {scanData.scan_id}
                   </span>
-                  <span className="text-xs text-slate-500 font-mono">
+                  <span className="text-xs text-[#71717a] font-mono">
                     {scanData.timestamp}
                   </span>
                 </div>
-                <h2 className="text-2xl font-extrabold text-white">
-                  Privacy Risk & PII Audit Details
+                <h2 className="text-xl font-normal text-[#ededed] tracking-tight">
+                  Privacy risk and sensitivity audit
                 </h2>
-                <p className="text-xs text-slate-400">
-                  Source: <b className="text-slate-300 uppercase">{scanData.input_type}</b>
-                  {scanData.document_name && <span> ({scanData.document_name})</span>} • Processed in <b className="text-cyan-400">{scanData.processing_time_ms} ms</b>
+                <p className="text-xs text-[#71717a] font-mono">
+                  Source: {scanData.input_type}
+                  {scanData.document_name && <span> ({scanData.document_name})</span>} • Processing latency: {scanData.processing_time_ms} ms
                 </p>
               </div>
 
               {/* Metric Cards Row */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
                 {/* Score */}
                 {(() => {
                   const risk = scanData.risk_assessment;
                   const isHigh = risk.category === 'HIGH';
                   const isMed = risk.category === 'MEDIUM';
                   const riskColor = isHigh ? 'text-rose-400' : (isMed ? 'text-amber-400' : 'text-emerald-400');
-                  const riskBg = isHigh ? 'bg-rose-500/10 border-rose-500/30' : (isMed ? 'bg-amber-500/10 border-amber-500/30' : 'bg-emerald-500/10 border-emerald-500/30');
+                  const riskBadge = isHigh
+                    ? 'text-rose-300 bg-rose-500/10 border-rose-500/20'
+                    : isMed
+                    ? 'text-amber-300 bg-amber-500/10 border-amber-500/20'
+                    : 'text-emerald-300 bg-emerald-500/10 border-emerald-500/20';
 
                   return (
-                    <div className={`cyber-card p-5 flex flex-col justify-between ${riskBg}`}>
-                      <div className="flex items-center justify-between">
-                        <span className="text-xs font-bold font-mono tracking-wider text-slate-400 uppercase">Risk Score</span>
+                    <div className="surface-card p-5 flex flex-col justify-between">
+                      <div className="flex items-center justify-between text-xs text-[#71717a]">
+                        <span>Risk score</span>
                         {isHigh ? <ShieldAlert className="w-4 h-4 text-rose-400" /> : <ShieldCheck className={`w-4 h-4 ${riskColor}`} />}
                       </div>
-                      <div className="my-2 flex items-baseline gap-2">
-                        <span className={`text-4xl font-black ${riskColor}`}>{risk.score}</span>
-                        <span className="text-xs text-slate-500 font-mono">/ 100</span>
+                      <div className="my-2 flex items-baseline gap-1.5">
+                        <span className={`text-3xl font-mono ${riskColor}`}>{risk.score}</span>
+                        <span className="text-xs text-[#71717a] font-mono">/ 100</span>
                       </div>
-                      <span className={`text-[10px] font-extrabold uppercase px-2 py-0.5 rounded border inline-block w-fit ${riskBg} ${riskColor}`}>
-                        {risk.category} RISK
+                      <span className={`text-[10px] font-mono px-2 py-0.5 rounded border inline-block w-fit ${riskBadge}`}>
+                        {risk.category} RISK TIER
                       </span>
                     </div>
                   );
                 })()}
 
-                <div className="cyber-card p-5 flex flex-col justify-between">
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs font-bold font-mono tracking-wider text-slate-400 uppercase">Total Detected</span>
-                    <Layers className="w-4 h-4 text-cyan-400" />
+                <div className="surface-card p-5 flex flex-col justify-between">
+                  <div className="flex items-center justify-between text-xs text-[#71717a]">
+                    <span>Total entities</span>
+                    <Layers className="w-4 h-4 text-[#a1a1a6]" />
                   </div>
-                  <div className="my-2 text-4xl font-black text-white">
+                  <div className="my-2 text-3xl font-mono text-[#ededed]">
                     {scanData.total_entities_detected}
                   </div>
-                  <span className="text-[11px] text-slate-400">
-                    From {scanData.character_count.toLocaleString()} chars
+                  <span className="text-[11px] text-[#71717a] font-mono">
+                    {scanData.character_count.toLocaleString()} characters parsed
                   </span>
                 </div>
 
-                <div className="cyber-card p-5 flex flex-col justify-between border-rose-950/60 bg-[#0e121e]">
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs font-bold font-mono tracking-wider text-rose-400 uppercase">High Sensitivity</span>
+                <div className="surface-card p-5 flex flex-col justify-between">
+                  <div className="flex items-center justify-between text-xs text-rose-400">
+                    <span>High sensitivity</span>
                     <AlertTriangle className="w-4 h-4 text-rose-400" />
                   </div>
-                  <div className="my-2 text-4xl font-black text-rose-400">
+                  <div className="my-2 text-3xl font-mono text-rose-400">
                     {scanData.high_sensitivity_count}
                   </div>
-                  <span className="text-[11px] text-slate-400">
+                  <span className="text-[11px] text-[#71717a]">
                     Aadhaar, PAN, Cards, Accounts
                   </span>
                 </div>
 
-                <div className="cyber-card p-5 flex flex-col justify-between">
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs font-bold font-mono tracking-wider text-slate-400 uppercase">Medium & Low</span>
-                    <Activity className="w-4 h-4 text-amber-400" />
+                <div className="surface-card p-5 flex flex-col justify-between">
+                  <div className="flex items-center justify-between text-xs text-[#71717a]">
+                    <span>Medium & Low</span>
+                    <Activity className="w-4 h-4 text-[#a1a1a6]" />
                   </div>
-                  <div className="my-2 flex items-baseline gap-3 text-white">
-                    <span className="text-3xl font-extrabold text-amber-400">{scanData.medium_sensitivity_count}</span>
-                    <span className="text-xs text-slate-500">Med</span>
-                    <span className="text-3xl font-extrabold text-emerald-400 ml-2">{scanData.low_sensitivity_count}</span>
-                    <span className="text-xs text-slate-500">Low</span>
+                  <div className="my-2 flex items-baseline gap-2 text-[#ededed] font-mono">
+                    <span className="text-2xl text-amber-400">{scanData.medium_sensitivity_count}</span>
+                    <span className="text-xs text-[#71717a]">med</span>
+                    <span className="text-2xl text-emerald-400 ml-1.5">{scanData.low_sensitivity_count}</span>
+                    <span className="text-xs text-[#71717a]">low</span>
                   </div>
-                  <span className="text-[11px] text-slate-400">
-                    Phone, Email, Addresses, Names
+                  <span className="text-[11px] text-[#71717a]">
+                    Contact details & names
                   </span>
                 </div>
               </div>
 
-              {/* Summary Rationale */}
-              <div className="p-4 rounded-xl border border-slate-800 bg-slate-900/60 flex items-start gap-3">
-                <Info className="w-4 h-4 text-cyan-400 shrink-0 mt-0.5" />
-                <div className="space-y-1">
-                  <h4 className="text-xs font-bold text-white uppercase tracking-wider font-mono">Assessment Summary</h4>
-                  <p className="text-xs text-slate-300 leading-relaxed">
+              {/* Assessment Rationale */}
+              <div className="p-3.5 rounded-lg border border-white/[0.08] bg-[#18181b] flex items-start gap-2.5">
+                <Info className="w-4 h-4 text-[#a1a1a6] shrink-0 mt-0.5" />
+                <div className="space-y-0.5 text-xs">
+                  <span className="font-medium text-[#ededed]">Audit summary</span>
+                  <p className="text-[#a1a1a6] leading-relaxed">
                     {scanData.risk_assessment.summary}
                   </p>
                 </div>
               </div>
 
               {/* Inspection & Masking Panel */}
-              <div className="cyber-card p-6 space-y-4">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-800 pb-4">
+              <div className="surface-card p-6 space-y-4">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-white/[0.08] pb-3">
                   <div>
-                    <h3 className="text-sm font-bold text-white flex items-center gap-2">
-                      <Lock className="w-4 h-4 text-cyan-400" />
-                      <span>Data Masking & Redaction View</span>
+                    <h3 className="text-sm font-medium text-[#ededed] flex items-center gap-2">
+                      <Lock className="w-4 h-4 text-[#a1a1a6] stroke-[1.5]" />
+                      <span>Data masking and redaction</span>
                     </h3>
-                    <p className="text-xs text-slate-400">
-                      Toggle between highlighted original text and masked representation.
+                    <p className="text-xs text-[#71717a]">
+                      Inspect raw tagged spans or toggle to the sanitized representation.
                     </p>
                   </div>
 
                   <div className="flex items-center gap-2">
-                    <div className="p-1 bg-slate-900 border border-slate-800 rounded-lg flex items-center text-xs">
+                    <div className="inline-flex p-0.5 bg-[#141415] border border-white/10 rounded-md text-xs">
                       <button
                         type="button"
                         onClick={() => setViewMode('highlighted')}
-                        className={`px-3 py-1 rounded-md font-semibold transition-all ${
+                        className={`px-2.5 py-1 rounded text-xs transition-colors ${
                           viewMode === 'highlighted'
-                            ? 'bg-cyan-500 text-slate-950 shadow-sm'
-                            : 'text-slate-400 hover:text-white'
+                            ? 'bg-[#222225] text-[#ededed]'
+                            : 'text-[#71717a] hover:text-[#ededed]'
                         }`}
                       >
                         Highlighted
@@ -379,10 +379,10 @@ export const DashboardPage: React.FC = () => {
                       <button
                         type="button"
                         onClick={() => setViewMode('masked')}
-                        className={`px-3 py-1 rounded-md font-semibold transition-all ${
+                        className={`px-2.5 py-1 rounded text-xs transition-colors ${
                           viewMode === 'masked'
-                            ? 'bg-cyan-500 text-slate-950 shadow-sm'
-                            : 'text-slate-400 hover:text-white'
+                            ? 'bg-[#222225] text-[#ededed]'
+                            : 'text-[#71717a] hover:text-[#ededed]'
                         }`}
                       >
                         Masked
@@ -391,27 +391,27 @@ export const DashboardPage: React.FC = () => {
 
                     <button
                       onClick={handleCopyMasked}
-                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs text-slate-200 border border-slate-700 font-medium transition-all"
+                      className="flex items-center gap-1 px-2.5 py-1 rounded bg-[#222225] hover:bg-[#2a2a2e] text-xs text-[#ededed] border border-white/10 transition-colors"
                     >
-                      {copied ? <Check className="w-3 h-3 text-emerald-400" /> : <Copy className="w-3 h-3 text-slate-400" />}
+                      {copied ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5 text-[#71717a]" />}
                       <span>{copied ? 'Copied' : 'Copy'}</span>
                     </button>
 
                     <button
                       onClick={handleDownloadMasked}
-                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs text-slate-200 border border-slate-700 font-medium transition-all"
+                      className="flex items-center gap-1 px-2.5 py-1 rounded bg-[#222225] hover:bg-[#2a2a2e] text-xs text-[#ededed] border border-white/10 transition-colors"
                     >
-                      <Download className="w-3 h-3 text-slate-400" />
+                      <Download className="w-3.5 h-3.5 text-[#71717a]" />
                       <span>Save</span>
                     </button>
                   </div>
                 </div>
 
-                <div className="p-4 bg-[#080d19] rounded-xl border border-slate-800 max-h-80 overflow-y-auto">
+                <div className="p-4 bg-[#141415] rounded-lg border border-white/10 max-h-80 overflow-y-auto">
                   {viewMode === 'highlighted' ? (
                     renderHighlightedText()
                   ) : (
-                    <div className="font-mono text-xs sm:text-sm leading-relaxed whitespace-pre-wrap text-cyan-200">
+                    <div className="font-mono text-xs sm:text-sm leading-relaxed whitespace-pre-wrap text-[#ededed]">
                       {scanData.masked_text}
                     </div>
                   )}
@@ -419,11 +419,11 @@ export const DashboardPage: React.FC = () => {
               </div>
 
               {/* Detected Entities Table */}
-              <div className="cyber-card p-6 space-y-4">
-                <div className="flex items-center justify-between">
-                  <h3 className="text-sm font-bold text-white flex items-center gap-2">
-                    <Layers className="w-4 h-4 text-cyan-400" />
-                    <span>Detected Entities ({scanData.detected_entities.length})</span>
+              <div className="surface-card p-6 space-y-4">
+                <div className="flex items-center justify-between border-b border-white/[0.08] pb-3">
+                  <h3 className="text-sm font-medium text-[#ededed] flex items-center gap-2">
+                    <Layers className="w-4 h-4 text-[#a1a1a6] stroke-[1.5]" />
+                    <span>Identified entities ({scanData.detected_entities.length})</span>
                   </h3>
                 </div>
 
@@ -431,44 +431,42 @@ export const DashboardPage: React.FC = () => {
                   <div className="overflow-x-auto">
                     <table className="w-full text-left text-xs border-collapse font-mono">
                       <thead>
-                        <tr className="border-b border-slate-800 text-slate-400 uppercase bg-slate-900/60">
+                        <tr className="border-b border-white/[0.08] text-[#71717a] bg-[#141415]">
                           <th className="py-2.5 px-3">Type</th>
                           <th className="py-2.5 px-3">Sensitivity</th>
                           <th className="py-2.5 px-3">Confidence</th>
-                          <th className="py-2.5 px-3">Validation Status</th>
-                          <th className="py-2.5 px-3">Masked Version</th>
+                          <th className="py-2.5 px-3">Validation check</th>
+                          <th className="py-2.5 px-3">Masked format</th>
                         </tr>
                       </thead>
-                      <tbody className="divide-y divide-slate-800/60">
+                      <tbody className="divide-y divide-white/[0.06]">
                         {scanData.detected_entities.map((ent, idx) => {
                           const sensBadge = ent.sensitivity_level === 'HIGH'
-                            ? 'text-rose-400 bg-rose-500/10 border-rose-500/30'
+                            ? 'text-rose-300 bg-rose-500/10 border-rose-500/20'
                             : ent.sensitivity_level === 'MEDIUM'
-                            ? 'text-amber-400 bg-amber-500/10 border-amber-500/30'
-                            : 'text-emerald-400 bg-emerald-500/10 border-emerald-500/30';
+                            ? 'text-amber-300 bg-amber-500/10 border-amber-500/20'
+                            : 'text-emerald-300 bg-emerald-500/10 border-emerald-500/20';
                           return (
-                            <tr key={idx} className="hover:bg-slate-900/40">
-                              <td className="py-2.5 px-3 font-bold text-white">{ent.entity_type}</td>
-                              <td className="py-2.5 px-3">
-                                <span className={`px-2 py-0.5 rounded border text-[10px] font-bold ${sensBadge}`}>
+                            <tr key={idx} className="hover:bg-[#222225]/40 transition-colors">
+                              <td className="py-2 px-3 text-[#ededed]">{ent.entity_type}</td>
+                              <td className="py-2 px-3">
+                                <span className={`px-2 py-0.5 rounded border text-[10px] ${sensBadge}`}>
                                   {ent.sensitivity_level}
                                 </span>
                               </td>
-                              <td className="py-2.5 px-3 text-slate-300">
+                              <td className="py-2 px-3 text-[#a1a1a6]">
                                 {Math.round(ent.confidence_score * 100)}%
                               </td>
-                              <td className="py-2.5 px-3 text-slate-400">
+                              <td className="py-2 px-3 text-[#71717a]">
                                 {ent.is_validated ? (
-                                  <span className="text-emerald-400 font-semibold">
+                                  <span className="text-emerald-400">
                                     ✓ {ent.validation_details || 'Verified'}
                                   </span>
                                 ) : (
-                                  <span className="text-slate-500 font-normal">
-                                    {ent.validation_details || 'Format Match'}
-                                  </span>
+                                  <span>{ent.validation_details || 'Format Match'}</span>
                                 )}
                               </td>
-                              <td className="py-2.5 px-3 text-cyan-300">{ent.masked_text}</td>
+                              <td className="py-2 px-3 text-[#ededed] font-mono">{ent.masked_text}</td>
                             </tr>
                           );
                         })}
@@ -476,80 +474,83 @@ export const DashboardPage: React.FC = () => {
                     </table>
                   </div>
                 ) : (
-                  <p className="text-xs text-slate-400">No entities detected.</p>
+                  <p className="text-xs text-[#71717a]">No entities detected in this record.</p>
                 )}
               </div>
 
-              {/* Explainable Scoring Matrix */}
-              <div className="cyber-card p-6 space-y-4">
-                <h3 className="text-sm font-bold text-white flex items-center gap-2">
-                  <Activity className="w-4 h-4 text-cyan-400" />
-                  <span>Explainable Mathematical Formula & Risk Breakdown</span>
-                </h3>
+              {/* Explainable Scoring Breakdown */}
+              <div className="surface-card p-6 space-y-4">
+                <div className="flex items-center justify-between border-b border-white/[0.08] pb-3">
+                  <h3 className="text-sm font-medium text-[#ededed] flex items-center gap-2">
+                    <Activity className="w-4 h-4 text-[#a1a1a6] stroke-[1.5]" />
+                    <span>Risk model calculation breakdown</span>
+                  </h3>
+                </div>
 
                 {scanData.risk_assessment.breakdown.length > 0 ? (
                   <div className="overflow-x-auto">
                     <table className="w-full text-left text-xs border-collapse font-mono">
                       <thead>
-                        <tr className="border-b border-slate-800 text-slate-400 uppercase bg-slate-900/60">
+                        <tr className="border-b border-white/[0.08] text-[#71717a] bg-[#141415]">
                           <th className="py-2 px-3">Category</th>
                           <th className="py-2 px-3">Count</th>
-                          <th className="py-2 px-3">Base Weight</th>
-                          <th className="py-2 px-3">Assigned Points</th>
-                          <th className="py-2 px-3">Risk Justification</th>
+                          <th className="py-2 px-3">Base weight</th>
+                          <th className="py-2 px-3">Assigned points</th>
+                          <th className="py-2 px-3">Mathematical explanation</th>
                         </tr>
                       </thead>
-                      <tbody className="divide-y divide-slate-800/60">
+                      <tbody className="divide-y divide-white/[0.06]">
                         {scanData.risk_assessment.breakdown.map((b, idx) => (
-                          <tr key={idx} className="hover:bg-slate-900/40">
-                            <td className="py-2.5 px-3 font-semibold text-white">{b.entity_type}</td>
-                            <td className="py-2.5 px-3 text-slate-300">{b.count}</td>
-                            <td className="py-2.5 px-3 text-slate-400">{b.weight_per_item} pts</td>
-                            <td className="py-2.5 px-3 font-bold text-cyan-400">+{b.total_points}</td>
-                            <td className="py-2.5 px-3 text-slate-400 font-sans text-xs">{b.explanation}</td>
+                          <tr key={idx} className="hover:bg-[#222225]/40 transition-colors">
+                            <td className="py-2 px-3 text-[#ededed]">{b.entity_type}</td>
+                            <td className="py-2 px-3 text-[#a1a1a6]">{b.count}</td>
+                            <td className="py-2 px-3 text-[#71717a]">{b.weight_per_item} pts</td>
+                            <td className="py-2 px-3 text-[#ededed]">+{b.total_points}</td>
+                            <td className="py-2 px-3 text-[#a1a1a6] font-sans text-xs">{b.explanation}</td>
                           </tr>
                         ))}
                       </tbody>
                     </table>
                   </div>
                 ) : (
-                  <p className="text-xs text-slate-400">Zero risk points (Clean document).</p>
+                  <p className="text-xs text-[#71717a]">Zero risk points (Clean input).</p>
                 )}
               </div>
 
-              {/* Recommendations */}
-              <div className="cyber-card p-6 space-y-4">
-                <h3 className="text-sm font-bold text-white flex items-center gap-2">
-                  <ShieldCheck className="w-4 h-4 text-cyan-400" />
-                  <span>Actionable Privacy Directives</span>
-                </h3>
+              {/* Actionable Directives */}
+              <div className="surface-card p-6 space-y-4">
+                <div className="border-b border-white/[0.08] pb-3">
+                  <h3 className="text-sm font-medium text-[#ededed] flex items-center gap-2">
+                    <ShieldCheck className="w-4 h-4 text-[#a1a1a6] stroke-[1.5]" />
+                    <span>Statutory remediation directives</span>
+                  </h3>
+                </div>
 
                 <div className="space-y-3">
                   {scanData.recommendations.map((rec) => {
                     const isCrit = rec.severity === 'CRITICAL';
                     const isWarn = rec.severity === 'WARNING';
                     const badgeColor = isCrit
-                      ? 'bg-rose-500/10 text-rose-400 border-rose-500/30'
+                      ? 'bg-rose-500/10 text-rose-300 border-rose-500/20'
                       : isWarn
-                      ? 'bg-amber-500/10 text-amber-400 border-amber-500/30'
-                      : 'bg-blue-500/10 text-blue-400 border-blue-500/30';
-                    const leftBorder = isCrit ? 'border-l-rose-500' : isWarn ? 'border-l-amber-500' : 'border-l-blue-500';
+                      ? 'bg-amber-500/10 text-amber-300 border-amber-500/20'
+                      : 'bg-zinc-800 text-[#ededed] border-white/10';
 
                     return (
                       <div
                         key={rec.id}
-                        className={`p-4 rounded-xl bg-slate-900/50 border border-slate-800 border-l-4 ${leftBorder} space-y-2`}
+                        className="p-4 rounded-lg bg-[#141415] border border-white/[0.08] space-y-2"
                       >
                         <div className="flex items-center justify-between">
-                          <span className="font-bold text-xs text-white">{rec.title}</span>
-                          <span className={`text-[10px] font-extrabold uppercase px-2 py-0.5 rounded border font-mono ${badgeColor}`}>
+                          <span className="font-medium text-xs text-[#ededed]">{rec.title}</span>
+                          <span className={`text-[10px] font-mono px-2 py-0.5 rounded border ${badgeColor}`}>
                             {rec.severity}
                           </span>
                         </div>
-                        <p className="text-xs text-slate-300 leading-relaxed">
+                        <p className="text-xs text-[#a1a1a6] leading-relaxed">
                           {rec.description}
                         </p>
-                        <ul className="list-disc list-inside text-xs text-slate-400 space-y-1 pt-1">
+                        <ul className="list-disc list-inside text-xs text-[#71717a] space-y-1 pt-1">
                           {rec.action_steps.map((step, sIdx) => (
                             <li key={sIdx}>{step}</li>
                           ))}
@@ -566,130 +567,132 @@ export const DashboardPage: React.FC = () => {
 
       {/* VIEW 2: SYSTEM AGGREGATE ANALYTICS */}
       {activeTab === 'system' && (
-        <div className="space-y-8">
+        <div className="space-y-6">
           <div className="space-y-1">
-            <h2 className="text-2xl font-extrabold text-white tracking-tight">
-              Enterprise Privacy Risk Posture
+            <h2 className="text-xl font-normal text-[#ededed] tracking-tight">
+              Enterprise privacy posture
             </h2>
-            <p className="text-xs text-slate-400">
-              Macro telemetry calculated across all historical document scans stored in the database.
+            <p className="text-xs text-[#71717a]">
+              Aggregated telemetry calculated across all historical document scans.
             </p>
           </div>
 
           {!systemSummary || systemSummary.total_scans === 0 ? (
-            <div className="cyber-card py-16 px-4 text-center space-y-4 max-w-lg mx-auto">
-              <Activity className="w-10 h-10 mx-auto text-slate-600" />
+            <div className="surface-card py-16 px-4 text-center space-y-3 max-w-md mx-auto">
+              <Activity className="w-8 h-8 mx-auto text-[#71717a]" />
               <div className="space-y-1">
-                <h3 className="text-lg font-bold text-white">No Historical Telemetry Yet</h3>
-                <p className="text-xs text-slate-400">
-                  Run privacy scans to compile aggregated enterprise risk analytics.
+                <h3 className="text-sm font-medium text-[#ededed]">No historical records yet</h3>
+                <p className="text-xs text-[#71717a]">
+                  Execute privacy scans to compile aggregated telemetry.
                 </p>
               </div>
               <Link
                 to="/scanner"
-                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold bg-cyan-500 text-slate-950 text-xs shadow-md shadow-cyan-500/20"
+                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-md font-medium bg-[#ededed] text-[#141415] text-xs hover:bg-white transition-colors"
               >
-                <span>Execute First Scan</span>
+                <span>Execute first scan</span>
               </Link>
             </div>
           ) : (
-            <div className="space-y-8">
+            <div className="space-y-6">
               {/* Macro Cards */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                <div className="cyber-card p-5 space-y-2">
-                  <div className="flex items-center justify-between text-xs font-mono text-slate-400">
-                    <span>TOTAL SCANS</span>
-                    <BarChart3 className="w-4 h-4 text-cyan-400" />
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                <div className="surface-card p-5 space-y-1">
+                  <div className="flex items-center justify-between text-xs text-[#71717a]">
+                    <span>Total scans</span>
+                    <BarChart3 className="w-4 h-4 stroke-[1.5]" />
                   </div>
-                  <div className="text-4xl font-black text-white">{systemSummary.total_scans}</div>
-                  <span className="text-[11px] text-slate-500 font-mono">Processed audits</span>
+                  <div className="text-3xl font-mono text-[#ededed]">{systemSummary.total_scans}</div>
+                  <span className="text-[11px] text-[#71717a] font-mono">Recorded audits</span>
                 </div>
 
-                <div className="cyber-card p-5 space-y-2">
-                  <div className="flex items-center justify-between text-xs font-mono text-slate-400">
-                    <span>AVG RISK SCORE</span>
-                    <Activity className="w-4 h-4 text-amber-400" />
+                <div className="surface-card p-5 space-y-1">
+                  <div className="flex items-center justify-between text-xs text-[#71717a]">
+                    <span>Avg risk score</span>
+                    <Activity className="w-4 h-4 stroke-[1.5]" />
                   </div>
-                  <div className="text-4xl font-black text-amber-400">{systemSummary.average_risk_score}</div>
-                  <span className="text-[11px] text-slate-500 font-mono">Out of 100 max</span>
+                  <div className="text-3xl font-mono text-amber-400">{systemSummary.average_risk_score}</div>
+                  <span className="text-[11px] text-[#71717a] font-mono">Out of 100 max</span>
                 </div>
 
-                <div className="cyber-card p-5 space-y-2">
-                  <div className="flex items-center justify-between text-xs font-mono text-slate-400">
-                    <span>TOTAL PII DETECTED</span>
-                    <Layers className="w-4 h-4 text-blue-400" />
+                <div className="surface-card p-5 space-y-1">
+                  <div className="flex items-center justify-between text-xs text-[#71717a]">
+                    <span>PII entities</span>
+                    <Layers className="w-4 h-4 stroke-[1.5]" />
                   </div>
-                  <div className="text-4xl font-black text-cyan-400">{systemSummary.total_pii_detected}</div>
-                  <span className="text-[11px] text-slate-500 font-mono">Across all files</span>
+                  <div className="text-3xl font-mono text-[#ededed]">{systemSummary.total_pii_detected}</div>
+                  <span className="text-[11px] text-[#71717a] font-mono">Across all files</span>
                 </div>
 
-                <div className="cyber-card p-5 space-y-2 border-rose-950/60 bg-[#0e121e]">
-                  <div className="flex items-center justify-between text-xs font-mono text-rose-400">
-                    <span>HIGH RISK AUDITS</span>
-                    <AlertTriangle className="w-4 h-4 text-rose-400" />
+                <div className="surface-card p-5 space-y-1">
+                  <div className="flex items-center justify-between text-xs text-rose-400">
+                    <span>High risk ratio</span>
+                    <AlertTriangle className="w-4 h-4 stroke-[1.5]" />
                   </div>
-                  <div className="text-4xl font-black text-rose-400">{systemSummary.high_risk_scans}</div>
-                  <span className="text-[11px] text-slate-500 font-mono">{Math.round((systemSummary.high_risk_scans / systemSummary.total_scans) * 100)}% of audits</span>
+                  <div className="text-3xl font-mono text-rose-400">{systemSummary.high_risk_scans}</div>
+                  <span className="text-[11px] text-[#71717a] font-mono">
+                    {Math.round((systemSummary.high_risk_scans / systemSummary.total_scans) * 100)}% of audits
+                  </span>
                 </div>
               </div>
 
               {/* Macro Recharts */}
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                 {/* Aggregate Sensitivity Pie */}
-                <div className="cyber-card p-6 space-y-4">
-                  <h3 className="text-xs font-bold text-white uppercase tracking-wider font-mono">
-                    System-Wide Sensitivity Distribution
+                <div className="surface-card p-6 space-y-3">
+                  <h3 className="text-xs font-mono text-[#71717a]">
+                    SENSITIVITY DISTRIBUTION
                   </h3>
-                  <div className="h-60 w-full flex items-center justify-center">
+                  <div className="h-56 w-full flex items-center justify-center">
                     <ResponsiveContainer width="100%" height="100%">
                       <PieChart>
                         <Pie
                           data={[
-                            { name: 'High', value: systemSummary.sensitivity_distribution.HIGH, color: '#ef4444' },
-                            { name: 'Medium', value: systemSummary.sensitivity_distribution.MEDIUM, color: '#f59e0b' },
-                            { name: 'Low', value: systemSummary.sensitivity_distribution.LOW, color: '#10b981' }
+                            { name: 'High', value: systemSummary.sensitivity_distribution.HIGH, color: '#f87171' },
+                            { name: 'Medium', value: systemSummary.sensitivity_distribution.MEDIUM, color: '#fbbf24' },
+                            { name: 'Low', value: systemSummary.sensitivity_distribution.LOW, color: '#34d399' }
                           ].filter(d => d.value > 0)}
                           cx="50%"
                           cy="50%"
-                          innerRadius={55}
-                          outerRadius={85}
-                          paddingAngle={5}
+                          innerRadius={50}
+                          outerRadius={75}
+                          paddingAngle={4}
                           dataKey="value"
                         >
-                          <Cell fill="#ef4444" />
-                          <Cell fill="#f59e0b" />
-                          <Cell fill="#10b981" />
+                          <Cell fill="#f87171" />
+                          <Cell fill="#fbbf24" />
+                          <Cell fill="#34d399" />
                         </Pie>
-                        <Tooltip contentStyle={{ backgroundColor: '#090e1a', borderColor: '#1e293b', borderRadius: '8px', fontSize: '12px' }} />
+                        <Tooltip contentStyle={{ backgroundColor: '#18181b', borderColor: 'rgba(255,255,255,0.1)', borderRadius: '6px', fontSize: '11px', color: '#ededed' }} />
                       </PieChart>
                     </ResponsiveContainer>
                   </div>
-                  <div className="flex items-center justify-center gap-6 text-xs font-mono">
-                    <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-rose-500" /> High: {systemSummary.sensitivity_distribution.HIGH}</span>
-                    <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-amber-500" /> Med: {systemSummary.sensitivity_distribution.MEDIUM}</span>
-                    <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-emerald-500" /> Low: {systemSummary.sensitivity_distribution.LOW}</span>
+                  <div className="flex items-center justify-center gap-6 text-xs font-mono text-[#a1a1a6]">
+                    <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-rose-400" /> High: {systemSummary.sensitivity_distribution.HIGH}</span>
+                    <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-amber-400" /> Med: {systemSummary.sensitivity_distribution.MEDIUM}</span>
+                    <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-emerald-400" /> Low: {systemSummary.sensitivity_distribution.LOW}</span>
                   </div>
                 </div>
 
                 {/* Aggregate Entity Frequencies Bar Chart */}
-                <div className="cyber-card p-6 space-y-4">
-                  <h3 className="text-xs font-bold text-white uppercase tracking-wider font-mono">
-                    Top Discovered Entity Categories
+                <div className="surface-card p-6 space-y-3">
+                  <h3 className="text-xs font-mono text-[#71717a]">
+                    TOP DISCOVERED CATEGORIES
                   </h3>
-                  <div className="h-60 w-full">
+                  <div className="h-56 w-full">
                     <ResponsiveContainer width="100%" height="100%">
                       <BarChart 
                         data={Object.entries(systemSummary.entity_distribution).map(([entity, count]) => ({
                           entity: entity.replace('IN_', ''),
                           count
                         }))}
-                        margin={{ top: 10, right: 10, left: -20, bottom: 25 }}
+                        margin={{ top: 10, right: 10, left: -25, bottom: 25 }}
                       >
-                        <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" vertical={false} />
-                        <XAxis dataKey="entity" stroke="#64748b" fontSize={10} angle={-25} textAnchor="end" />
-                        <YAxis stroke="#64748b" fontSize={11} allowDecimals={false} />
-                        <Tooltip contentStyle={{ backgroundColor: '#090e1a', borderColor: '#1e293b', borderRadius: '8px', fontSize: '12px' }} />
-                        <Bar dataKey="count" fill="#3b82f6" radius={[4, 4, 0, 0]} />
+                        <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.06)" vertical={false} />
+                        <XAxis dataKey="entity" stroke="#71717a" fontSize={10} angle={-25} textAnchor="end" />
+                        <YAxis stroke="#71717a" fontSize={10} allowDecimals={false} />
+                        <Tooltip contentStyle={{ backgroundColor: '#18181b', borderColor: 'rgba(255,255,255,0.1)', borderRadius: '6px', fontSize: '11px', color: '#ededed' }} />
+                        <Bar dataKey="count" fill="#ededed" radius={[3, 3, 0, 0]} />
                       </BarChart>
                     </ResponsiveContainer>
                   </div>
@@ -697,12 +700,12 @@ export const DashboardPage: React.FC = () => {
               </div>
 
               {/* Recent Audits Table */}
-              <div className="cyber-card p-6 space-y-4">
-                <div className="flex items-center justify-between">
-                  <h3 className="text-xs font-bold text-white uppercase tracking-wider font-mono">
-                    Recent Enterprise Audits
+              <div className="surface-card p-6 space-y-3">
+                <div className="flex items-center justify-between border-b border-white/[0.08] pb-3">
+                  <h3 className="text-xs font-mono text-[#71717a]">
+                    RECENT AUDIT LOGS
                   </h3>
-                  <Link to="/history" className="text-xs text-cyan-400 hover:text-cyan-300 font-mono">
+                  <Link to="/history" className="text-xs text-[#a1a1a6] hover:text-[#ededed] font-mono">
                     View all logs →
                   </Link>
                 </div>
@@ -710,7 +713,7 @@ export const DashboardPage: React.FC = () => {
                 <div className="overflow-x-auto">
                   <table className="w-full text-left text-xs border-collapse font-mono">
                     <thead>
-                      <tr className="border-b border-slate-800 text-slate-400 uppercase bg-slate-900/60">
+                      <tr className="border-b border-white/[0.08] text-[#71717a] bg-[#141415]">
                         <th className="py-2.5 px-3">Audit ID</th>
                         <th className="py-2.5 px-3">Timestamp</th>
                         <th className="py-2.5 px-3">Type</th>
@@ -719,15 +722,19 @@ export const DashboardPage: React.FC = () => {
                         <th className="py-2.5 px-3">Entities</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-slate-800/60">
+                    <tbody className="divide-y divide-white/[0.06]">
                       {systemSummary.recent_scans.slice(0, 5).map((r) => {
                         const isH = r.risk_category === 'HIGH';
                         const isM = r.risk_category === 'MEDIUM';
-                        const badgeColor = isH ? 'text-rose-400 bg-rose-500/10 border-rose-500/30' : (isM ? 'text-amber-400 bg-amber-500/10 border-amber-500/30' : 'text-emerald-400 bg-emerald-500/10 border-emerald-500/30');
+                        const badgeColor = isH
+                          ? 'text-rose-300 bg-rose-500/10 border-rose-500/20'
+                          : isM
+                          ? 'text-amber-300 bg-amber-500/10 border-amber-500/20'
+                          : 'text-emerald-300 bg-emerald-500/10 border-emerald-500/20';
 
                         return (
-                          <tr key={r.scan_id} className="hover:bg-slate-900/40">
-                            <td className="py-2.5 px-3 font-bold text-white">
+                          <tr key={r.scan_id} className="hover:bg-[#222225]/40 transition-colors">
+                            <td className="py-2.5 px-3 font-medium text-[#ededed]">
                               <button
                                 onClick={async () => {
                                   const full = await api.getScanDetails(r.scan_id);
@@ -735,20 +742,20 @@ export const DashboardPage: React.FC = () => {
                                   sessionStorage.setItem('current_scan_result', JSON.stringify(full));
                                   setActiveTab('current');
                                 }}
-                                className="text-left text-cyan-400 hover:underline"
+                                className="text-left text-[#ededed] hover:underline"
                               >
                                 {r.scan_id}
                               </button>
                             </td>
-                            <td className="py-2.5 px-3 text-slate-400">{r.timestamp}</td>
-                            <td className="py-2.5 px-3 uppercase">{r.input_type}</td>
+                            <td className="py-2.5 px-3 text-[#71717a]">{r.timestamp}</td>
+                            <td className="py-2.5 px-3 uppercase text-[#a1a1a6]">{r.input_type}</td>
                             <td className="py-2.5 px-3">
-                              <span className={`px-2 py-0.5 rounded border text-[10px] font-extrabold uppercase ${badgeColor}`}>
+                              <span className={`px-2 py-0.5 rounded border text-[10px] ${badgeColor}`}>
                                 {r.risk_category}
                               </span>
                             </td>
-                            <td className="py-2.5 px-3 font-bold text-white">{r.risk_score} / 100</td>
-                            <td className="py-2.5 px-3 text-cyan-400">{r.total_entities}</td>
+                            <td className="py-2.5 px-3 font-mono text-[#ededed]">{r.risk_score} / 100</td>
+                            <td className="py-2.5 px-3 text-[#a1a1a6]">{r.total_entities}</td>
                           </tr>
                         );
                       })}
