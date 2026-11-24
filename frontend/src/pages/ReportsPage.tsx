@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { 
+  FileText, 
   Download, 
-  RefreshCw
+  RefreshCw, 
+  Clock
 } from 'lucide-react';
 import { api } from '../services/api';
 import type { ScanHistoryItem } from '../types';
@@ -49,122 +51,129 @@ export const ReportsPage: React.FC = () => {
   };
 
   return (
-    <div className="max-w-5xl mx-auto space-y-6">
+    <div className="max-w-5xl mx-auto space-y-8">
       {/* Header */}
-      <div className="space-y-1 border-b border-white/[0.08] pb-4">
-        <span className="text-xs font-mono text-[#71717a]">[OUTPUT // COMPLIANCE EXPORTS]</span>
-        <h1 className="text-2xl font-normal text-[#ededed] tracking-tight">
-          Cryptographic PDF audit reports
+      <div className="space-y-2 border-b border-slate-800 pb-6">
+        <div className="flex items-center gap-2 text-cyan-400 text-xs font-mono font-semibold uppercase tracking-wider">
+          <FileText className="w-4 h-4" />
+          <span>Audit & Compliance Reports</span>
+        </div>
+        <h1 className="text-3xl font-extrabold text-white tracking-tight">
+          Cryptographic PDF Audit Reports
         </h1>
-        <p className="text-xs text-[#a1a1a6]">
-          Generate and stream certified vector PDF compliance certificates compiled via ReportLab.
+        <p className="text-sm text-slate-400">
+          Download certified, professional PDF reports summarizing privacy risks, sensitivity classifications, explainable formulas, and remediation directives generated via Python ReportLab.
         </p>
       </div>
 
       {/* Report Features Overview */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-        <div className="surface-card p-5 space-y-1.5">
-          <span className="text-[10px] font-mono text-[#71717a]">REPORTLAB VECTOR</span>
-          <h4 className="text-sm font-medium text-[#ededed]">Deterministic layout</h4>
-          <p className="text-xs text-[#a1a1a6] leading-relaxed">
-            Compiled using Python ReportLab with structured tabular matrices and clean typography.
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="cyber-card p-5 space-y-2 border-t-2 border-cyan-500">
+          <div className="text-xs font-mono font-bold text-cyan-400">REPORTLAB ENGINE</div>
+          <h4 className="text-sm font-bold text-white">Full Vector PDF Formatting</h4>
+          <p className="text-xs text-slate-400">
+            Engineered using ReportLab with custom cybersecurity palettes, structured tabular grids, and clean typography.
           </p>
         </div>
 
-        <div className="surface-card p-5 space-y-1.5">
-          <span className="text-[10px] font-mono text-[#71717a]">PRIVACY BY DESIGN</span>
-          <h4 className="text-sm font-medium text-[#ededed]">Zero raw PII storage</h4>
-          <p className="text-xs text-[#a1a1a6] leading-relaxed">
-            PDF audits include only sanitized masked snippets (e.g. XXXX XXXX 1234) and statistical telemetry.
+        <div className="cyber-card p-5 space-y-2 border-t-2 border-blue-500">
+          <div className="text-xs font-mono font-bold text-blue-400">STRICT PRIVACY</div>
+          <h4 className="text-sm font-bold text-white">Zero Raw PII Exposure</h4>
+          <p className="text-xs text-slate-400">
+            All reports strictly contain masked snippets (e.g. XXXX XXXX 1234) and metadata. Raw sensitive text is never included.
           </p>
         </div>
 
-        <div className="surface-card p-5 space-y-1.5">
-          <span className="text-[10px] font-mono text-[#71717a]">STATUTORY AUDIT</span>
-          <h4 className="text-sm font-medium text-[#ededed]">Compliance ready</h4>
-          <p className="text-xs text-[#a1a1a6] leading-relaxed">
-            Formulated for compliance verification under the DPDP Act 2023, EU GDPR, and PCI-DSS.
+        <div className="cyber-card p-5 space-y-2 border-t-2 border-emerald-500">
+          <div className="text-xs font-mono font-bold text-emerald-400">COMPLIANCE READY</div>
+          <h4 className="text-sm font-bold text-white">DPDP & GDPR Audit Trail</h4>
+          <p className="text-xs text-slate-400">
+            Complete with verification timestamps, audit hashes, risk scores, and statutory legal disclaimers.
           </p>
         </div>
       </div>
 
       {/* Available Reports Section */}
-      <div className="surface-card p-6 space-y-4">
-        <div className="flex items-center justify-between border-b border-white/[0.08] pb-3">
+      <div className="cyber-card p-6 space-y-6">
+        <div className="flex items-center justify-between border-b border-slate-800 pb-4">
           <div>
-            <h3 className="text-sm font-medium text-[#ededed]">Available audit reports</h3>
-            <p className="text-xs text-[#71717a]">Export individual audit summaries into signed PDF documents.</p>
+            <h3 className="text-base font-bold text-white">Available Audit Reports</h3>
+            <p className="text-xs text-slate-400">
+              Select any past audit session to generate and stream the official PDF.
+            </p>
           </div>
-
           <button
             onClick={fetchScans}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs bg-[#141415] hover:bg-[#222225] border border-white/10 text-[#ededed] transition-colors"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-900 border border-slate-800 text-xs text-slate-300 hover:text-white"
           >
-            <RefreshCw className="w-3.5 h-3.5 text-[#71717a]" />
+            <RefreshCw className="w-3.5 h-3.5" />
             <span>Refresh</span>
           </button>
         </div>
 
         {isLoading ? (
-          <div className="py-12 text-center text-xs text-[#71717a] font-mono">
-            Loading available reports...
+          <div className="py-12 text-center text-xs text-slate-400 space-y-2">
+            <RefreshCw className="w-6 h-6 mx-auto animate-spin text-cyan-400" />
+            <p>Fetching report inventory...</p>
           </div>
         ) : scans.length === 0 ? (
-          <div className="py-12 text-center text-xs text-[#71717a]">
-            No completed scans found. Run a scan to generate a downloadable audit certificate.
+          <div className="py-12 text-center text-xs text-slate-400 space-y-2">
+            <FileText className="w-8 h-8 mx-auto text-slate-600" />
+            <p>No scans recorded yet. Execute a scan in the Scanner to generate a report.</p>
           </div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs border-collapse font-mono">
-              <thead>
-                <tr className="border-b border-white/[0.08] text-[#71717a] bg-[#141415]">
-                  <th className="py-2.5 px-3">Audit Reference</th>
-                  <th className="py-2.5 px-3">Timestamp</th>
-                  <th className="py-2.5 px-3">Risk Tier</th>
-                  <th className="py-2.5 px-3">Score</th>
-                  <th className="py-2.5 px-3 text-right">PDF Certificate</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-white/[0.06]">
-                {scans.map((s) => {
-                  const isHigh = s.risk_category === 'HIGH';
-                  const isMed = s.risk_category === 'MEDIUM';
-                  const badgeColor = isHigh
-                    ? 'text-rose-300 bg-rose-500/10 border-rose-500/20'
-                    : isMed
-                    ? 'text-amber-300 bg-amber-500/10 border-amber-500/20'
-                    : 'text-emerald-300 bg-emerald-500/10 border-emerald-500/20';
+          <div className="space-y-3">
+            {scans.map((s) => {
+              const isHigh = s.risk_category === 'HIGH';
+              const isMed = s.risk_category === 'MEDIUM';
+              const badgeStyle = isHigh
+                ? 'text-rose-400 bg-rose-500/10 border-rose-500/30'
+                : isMed
+                ? 'text-amber-400 bg-amber-500/10 border-amber-500/30'
+                : 'text-emerald-400 bg-emerald-500/10 border-emerald-500/30';
 
-                  return (
-                    <tr key={s.scan_id} className="hover:bg-[#222225]/40 transition-colors">
-                      <td className="py-2.5 px-3 text-[#ededed]">
-                        <span className="font-mono">{s.scan_id}</span>
-                        {s.document_name && (
-                          <span className="text-[10px] text-[#71717a] block">{s.document_name}</span>
-                        )}
-                      </td>
-                      <td className="py-2.5 px-3 text-[#71717a]">{s.timestamp}</td>
-                      <td className="py-2.5 px-3">
-                        <span className={`px-2 py-0.5 rounded border text-[10px] ${badgeColor}`}>
-                          {s.risk_category}
-                        </span>
-                      </td>
-                      <td className="py-2.5 px-3 text-[#ededed] font-mono">{s.risk_score} / 100</td>
-                      <td className="py-2.5 px-3 text-right">
-                        <button
-                          onClick={() => handleDownload(s.scan_id)}
-                          disabled={downloadingId === s.scan_id}
-                          className="inline-flex items-center gap-1.5 px-3 py-1 rounded bg-[#222225] hover:bg-[#2a2a2e] text-xs font-mono text-[#ededed] border border-white/10 transition-colors disabled:opacity-50"
-                        >
-                          <Download className="w-3.5 h-3.5 text-[#a1a1a6]" />
-                          <span>{downloadingId === s.scan_id ? 'Exporting...' : 'PDF'}</span>
-                        </button>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
+              return (
+                <div
+                  key={s.scan_id}
+                  className="p-4 rounded-xl bg-slate-900/60 border border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:border-slate-700 transition-all"
+                >
+                  <div className="space-y-1">
+                    <div className="flex items-center gap-2">
+                      <span className="font-bold text-sm text-white font-mono">{s.scan_id}</span>
+                      <span className={`text-[10px] font-extrabold uppercase px-2 py-0.5 rounded border font-mono ${badgeStyle}`}>
+                        {s.risk_category} RISK ({s.risk_score}/100)
+                      </span>
+                    </div>
+                    <div className="flex flex-wrap items-center gap-4 text-xs text-slate-400">
+                      <span className="flex items-center gap-1 font-mono">
+                        <Clock className="w-3 h-3 text-slate-500" />
+                        {s.timestamp}
+                      </span>
+                      <span>Type: <b className="text-slate-300 uppercase">{s.input_type}</b></span>
+                      <span>Entities: <b className="text-cyan-400">{s.total_entities}</b></span>
+                    </div>
+                  </div>
+
+                  <button
+                    onClick={() => handleDownload(s.scan_id)}
+                    disabled={downloadingId === s.scan_id}
+                    className="flex items-center justify-center gap-2 px-4 py-2 rounded-xl font-bold text-xs bg-slate-800 hover:bg-slate-700 text-cyan-400 border border-slate-700 shadow-sm transition-all whitespace-nowrap"
+                  >
+                    {downloadingId === s.scan_id ? (
+                      <>
+                        <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                        <span>Generating PDF...</span>
+                      </>
+                    ) : (
+                      <>
+                        <Download className="w-3.5 h-3.5" />
+                        <span>Download PDF Audit</span>
+                      </>
+                    )}
+                  </button>
+                </div>
+              );
+            })}
           </div>
         )}
       </div>

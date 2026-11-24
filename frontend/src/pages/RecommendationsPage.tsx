@@ -1,8 +1,10 @@
 import React from 'react';
 import { 
+  BookOpen, 
   ShieldCheck, 
   Lock, 
-  CreditCard
+  CreditCard, 
+  CheckCircle2
 } from 'lucide-react';
 
 export const RecommendationsPage: React.FC = () => {
@@ -10,21 +12,23 @@ export const RecommendationsPage: React.FC = () => {
     {
       category: "Indian Government Identifiers",
       icon: ShieldCheck,
+      color: "text-cyan-400",
+      borderColor: "border-cyan-500",
       items: [
         {
           title: "UIDAI Masked Aadhaar Directives",
           standard: "Aadhaar Act (2016) Section 29 & UIDAI Circulars",
           description: "Unmasked 12-digit Aadhaar numbers cannot legally be stored, photocopied, or published without statutory authorization under the Aadhaar Act.",
           remediation: [
-            "Replace the initial 8 digits with 'XXXX XXXX' and display only the terminal 4 digits.",
-            "Download official certified Masked Aadhaar PDFs directly from the UIDAI portal.",
+            "Always replace the first 8 digits with 'XXXX XXXX' and display only the terminal 4 digits.",
+            "Download official certified Masked Aadhaar PDFs directly from the myAadhaar portal.",
             "Never store plaintext Aadhaar numbers in databases or client-side caching mechanisms."
           ]
         },
         {
-          title: "Permanent Account Number (PAN) Protection",
+          title: "Permanent Account Number (PAN) Security",
           standard: "Income Tax Department & DPDP Act (2023)",
-          description: "PAN is a permanent 10-digit alphanumeric tax identifier. Public disclosure combined with Full Name and Date of Birth enables attackers to execute fraudulent KYC verification.",
+          description: "PAN is a permanent 10-digit alphanumeric tax identifier. Public disclosure of PAN combined with Full Name and Date of Birth allows attackers to perform fraudulent KYC verification.",
           remediation: [
             "Mask the middle 4 numeric characters as 'ABCDE****F' in non-statutory documents.",
             "Restrict PAN disclosures exclusively to SEBI-regulated, RBI-regulated, or Income Tax proceedings.",
@@ -34,9 +38,9 @@ export const RecommendationsPage: React.FC = () => {
         {
           title: "Indian Passport & Travel Credential Vaulting",
           standard: "Passport Act (1967) & International Civil Aviation Org (ICAO)",
-          description: "Passports contain nationality, place of birth, signature, and immigration histories, representing tier-one targets for identity replication.",
+          description: "Passports contain nationality, place of birth, signature, and immigration histories, representing tier-one targets for cross-border identity replication.",
           remediation: [
-            "Conceal internal numeric characters (e.g. 'A******9') in general business files.",
+            "Conceal internal numeric characters (e.g., 'A******9') in general business files.",
             "Store passport copies in encrypted cold storage with time-limited access tokens."
           ]
         }
@@ -45,6 +49,8 @@ export const RecommendationsPage: React.FC = () => {
     {
       category: "Financial & Payment Card Security",
       icon: CreditCard,
+      color: "text-rose-400",
+      borderColor: "border-rose-500",
       items: [
         {
           title: "Payment Card Isolation (PCI-DSS & RBI CoFT)",
@@ -53,7 +59,7 @@ export const RecommendationsPage: React.FC = () => {
           remediation: [
             "Display only the last 4 digits (e.g. '**** **** **** 1234') in receipts and invoices.",
             "Adopt RBI Card-on-File Tokenization (CoFT) tokens in lieu of raw cardholder numbers.",
-            "Redact and securely purge all CVV/CVC codes immediately upon payment authorization."
+            "Instantly redact and securely purge all CVV/CVC codes upon payment authorization."
           ]
         },
         {
@@ -68,15 +74,17 @@ export const RecommendationsPage: React.FC = () => {
       ]
     },
     {
-      category: "Contact, Demographics & Correlation Vulnerabilities",
+      category: "Contact, Demographics & Correlation Threats",
       icon: Lock,
+      color: "text-amber-400",
+      borderColor: "border-amber-500",
       items: [
         {
           title: "Direct Mobile & Telecommunications Redaction",
           standard: "TRAI Telecom Commercial Communications Customer Preference Regulations",
           description: "Uncontrolled exposure of mobile phone numbers leads directly to SMS phishing (smishing), unauthorized SIM swapping, and harassment.",
           remediation: [
-            "Mask contact numbers as '******3210' across public transcripts and customer support logs.",
+            "Mask contact numbers as '******3210' across public transcripts and client support portals.",
             "Transition sensitive service verifications from SMS-based OTPs to app-based TOTP or hardware security keys (FIDO2)."
           ]
         },
@@ -94,53 +102,63 @@ export const RecommendationsPage: React.FC = () => {
   ];
 
   return (
-    <div className="max-w-5xl mx-auto space-y-6">
+    <div className="max-w-5xl mx-auto space-y-12">
       {/* Header */}
-      <div className="space-y-1 border-b border-white/[0.08] pb-4">
-        <span className="text-xs font-mono text-[#71717a]">[COMPLIANCE // STATUTORY FRAMEWORKS]</span>
-        <h1 className="text-2xl font-normal text-[#ededed] tracking-tight">
-          Privacy recommendations & remediation
+      <div className="space-y-2 border-b border-slate-800 pb-6">
+        <div className="flex items-center gap-2 text-cyan-400 text-xs font-mono font-semibold uppercase tracking-wider">
+          <BookOpen className="w-4 h-4" />
+          <span>Privacy Knowledge Base</span>
+        </div>
+        <h1 className="text-3xl font-extrabold text-white tracking-tight">
+          Data Privacy & Compliance Guidelines
         </h1>
-        <p className="text-xs text-[#a1a1a6]">
-          Actionable directives and statutory protocols under UIDAI, PCI-DSS, EU GDPR, and the DPDP Act 2023.
+        <p className="text-sm text-slate-400">
+          Official security benchmarks, statutory redaction rules, and best practices for safeguarding sensitive Indian and international identifiers.
         </p>
       </div>
 
-      <div className="space-y-6">
-        {complianceGuides.map((group, gIdx) => {
-          const Icon = group.icon;
+      {/* Categories */}
+      <div className="space-y-10">
+        {complianceGuides.map((cat, cIdx) => {
+          const Icon = cat.icon;
           return (
-            <div key={gIdx} className="surface-card p-6 space-y-4">
-              <div className="flex items-center gap-2 border-b border-white/[0.08] pb-3">
-                <div className="w-6 h-6 rounded bg-[#222225] border border-white/10 flex items-center justify-center text-[#ededed]">
-                  <Icon className="w-3.5 h-3.5 stroke-[1.5]" />
+            <div key={cIdx} className="space-y-4">
+              <div className="flex items-center gap-3">
+                <div className={`p-2 rounded-lg bg-slate-900 border border-slate-800 ${cat.color}`}>
+                  <Icon className="w-5 h-5" />
                 </div>
-                <h2 className="text-sm font-medium text-[#ededed]">
-                  {group.category}
+                <h2 className="text-xl font-bold text-white tracking-tight">
+                  {cat.category}
                 </h2>
               </div>
 
-              <div className="space-y-4">
-                {group.items.map((item, iIdx) => (
-                  <div key={iIdx} className="p-4 rounded-lg bg-[#141415] border border-white/[0.06] space-y-2">
+              <div className="grid grid-cols-1 gap-4">
+                {cat.items.map((item, iIdx) => (
+                  <div
+                    key={iIdx}
+                    className={`cyber-card p-6 border-l-4 ${cat.borderColor} space-y-3`}
+                  >
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
-                      <h3 className="text-xs font-medium text-[#ededed]">{item.title}</h3>
-                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-[#18181b] border border-white/10 text-[#71717a]">
+                      <h3 className="text-base font-bold text-white">{item.title}</h3>
+                      <span className="text-[11px] font-mono px-2 py-0.5 rounded bg-slate-900 border border-slate-800 text-slate-400">
                         {item.standard}
                       </span>
                     </div>
 
-                    <p className="text-xs text-[#a1a1a6] leading-relaxed">
+                    <p className="text-xs text-slate-300 leading-relaxed">
                       {item.description}
                     </p>
 
-                    <div className="pt-1">
-                      <span className="text-[11px] font-medium text-[#ededed] block mb-1">
-                        Mandated remediation steps:
+                    <div className="pt-2 border-t border-slate-800/80 space-y-1.5">
+                      <span className="text-[11px] font-bold text-cyan-400 uppercase tracking-wider font-mono">
+                        Statutory Mitigation Procedures:
                       </span>
-                      <ul className="list-disc list-inside text-xs text-[#71717a] space-y-1">
-                        {item.remediation.map((step, sIdx) => (
-                          <li key={sIdx}>{step}</li>
+                      <ul className="space-y-1 text-xs text-slate-400">
+                        {item.remediation.map((r, rIdx) => (
+                          <li key={rIdx} className="flex items-start gap-2">
+                            <CheckCircle2 className="w-3.5 h-3.5 text-cyan-400 shrink-0 mt-0.5" />
+                            <span>{r}</span>
+                          </li>
                         ))}
                       </ul>
                     </div>

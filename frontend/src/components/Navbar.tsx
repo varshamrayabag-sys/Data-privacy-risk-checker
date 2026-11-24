@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { 
-  Shield, 
+  ShieldCheck, 
   Scan, 
   BarChart3, 
   History, 
   BookOpen, 
   FileText, 
-  Settings
+  Settings, 
+  Server,
+  Sparkles
 } from 'lucide-react';
 import { api } from '../services/api';
 
@@ -30,6 +32,7 @@ export const Navbar: React.FC = () => {
   }, []);
 
   const navLinks = [
+    { name: 'Home', path: '/', icon: ShieldCheck },
     { name: 'Scanner', path: '/scanner', icon: Scan },
     { name: 'Dashboard', path: '/dashboard', icon: BarChart3 },
     { name: 'Scan History', path: '/history', icon: History },
@@ -39,20 +42,22 @@ export const Navbar: React.FC = () => {
   ];
 
   return (
-    <header className="sticky top-0 z-50 bg-[#0f0f10]/95 backdrop-blur border-b border-white/[0.08]">
+    <header className="sticky top-0 z-50 backdrop-blur-md bg-[#070b14]/90 border-b border-slate-800">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-14">
-          {/* Logo & Product Name */}
-          <Link to="/" className="flex items-center gap-2.5 group">
-            <div className="w-8 h-8 rounded-lg bg-[#18181b] border border-white/10 flex items-center justify-center text-[#ededed] shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]">
-              <Shield className="w-4 h-4 stroke-[1.5]" />
+        <div className="flex items-center justify-between h-16">
+          {/* Logo & Brand */}
+          <Link to="/" className="flex items-center gap-3 group">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-cyan-600 via-blue-600 to-indigo-600 p-0.5 shadow-lg shadow-cyan-500/20 group-hover:shadow-cyan-500/40 transition-all">
+              <div className="w-full h-full bg-[#090e1a] rounded-[10px] flex items-center justify-center">
+                <ShieldCheck className="w-6 h-6 text-cyan-400 group-hover:scale-110 transition-transform" />
+              </div>
             </div>
-            <div className="flex flex-col">
-              <span className="text-sm font-medium tracking-tight text-[#ededed]">
-                Privacy Risk Checker
+            <div>
+              <span className="text-lg font-bold tracking-tight text-white flex items-center gap-2">
+                PRIVACY RISK <span className="text-cyan-400">CHECKER</span>
               </span>
-              <span className="text-[10px] text-[#71717a] font-mono tracking-wide">
-                Audit Workstation
+              <span className="text-[10px] text-slate-400 tracking-wider font-mono block -mt-1 uppercase">
+                Enterprise PII Security Guard
               </span>
             </div>
           </Link>
@@ -66,36 +71,50 @@ export const Navbar: React.FC = () => {
                 <Link
                   key={item.path}
                   to={item.path}
-                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-colors ${
+                  className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all ${
                     isActive
-                      ? 'bg-[#222225] text-[#ededed] border border-white/10 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]'
-                      : 'text-[#a1a1a6] hover:text-[#ededed] hover:bg-[#18181b]'
+                      ? 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/30 shadow-sm shadow-cyan-500/10'
+                      : 'text-slate-300 hover:text-white hover:bg-slate-800/60'
                   }`}
                 >
-                  <Icon className={`w-3.5 h-3.5 stroke-[1.5] ${isActive ? 'text-[#ededed]' : 'text-[#71717a]'}`} />
+                  <Icon className={`w-4 h-4 ${isActive ? 'text-cyan-400' : 'text-slate-400'}`} />
                   {item.name}
                 </Link>
               );
             })}
           </nav>
 
-          {/* Telemetry Status Indicator */}
-          <div className="flex items-center gap-3">
-            <div className="flex items-center gap-2 px-2.5 py-1 rounded-md bg-[#18181b] border border-white/[0.08] text-[11px] font-mono text-[#a1a1a6]">
+          {/* Right Action & Status */}
+          <div className="flex items-center gap-4">
+            {/* Status indicator */}
+            <div className="hidden sm:flex items-center gap-2 px-2.5 py-1 rounded-full bg-slate-900 border border-slate-800 text-xs">
+              <Server className="w-3.5 h-3.5 text-slate-400" />
               <span
-                className={`w-1.5 h-1.5 rounded-full ${
+                className={`w-2 h-2 rounded-full ${
                   isBackendHealthy === true
-                    ? 'bg-emerald-400'
+                    ? 'bg-emerald-400 animate-pulse shadow-sm shadow-emerald-400'
                     : isBackendHealthy === false
                     ? 'bg-rose-500'
                     : 'bg-amber-400'
                 }`}
               />
-              <span>{isBackendHealthy ? 'Engine ready' : isBackendHealthy === false ? 'Engine offline' : 'Connecting'}</span>
+              <span className="text-slate-300 font-mono text-[11px]">
+                {isBackendHealthy === true ? 'API ONLINE' : isBackendHealthy === false ? 'API OFFLINE' : 'CHECKING'}
+              </span>
             </div>
+
+            {/* Quick Scan CTA */}
+            <Link
+              to="/scanner"
+              className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-slate-950 shadow-md shadow-cyan-500/20 hover:shadow-cyan-500/30 transition-all"
+            >
+              <Sparkles className="w-4 h-4 text-slate-950" />
+              <span>Scan Now</span>
+            </Link>
           </div>
         </div>
       </div>
     </header>
   );
 };
+
